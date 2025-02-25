@@ -17,18 +17,18 @@ cd accessibility-guideline
 
 2. 依存パッケージのインストール
 ```bash
-npm install
+pnpm install
 ```
 
 3. 開発サーバーの起動
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 開発サーバーが起動すると、`http://localhost:4321` でサイトにアクセスできます。
 
 ## 利用可能なスクリプト
 
-- `npm run dev` - 開発サーバーを起動します
-- `npm run build` - 本番用にサイトをビルドします
-- `npm run preview` - ビルドしたサイトをプレビューします
+- `pnpm run dev` - 開発サーバーを起動します
+- `pnpm run build` - 本番用にサイトをビルドします
+- `pnpm run preview` - ビルドしたサイトをプレビューします

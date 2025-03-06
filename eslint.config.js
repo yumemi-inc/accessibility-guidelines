@@ -35,6 +35,6 @@ export default [
   ...tseslint.configs.recommended,
   ...eslintPluginAstro.configs.recommended,
   ...eslintPluginAstro.configs["jsx-a11y-strict"],
-  ...perfectionist.configs["recommended-natural"],
-  ...prettierConfig,
+  perfectionist.configs["recommended-natural"],
+  prettierConfig,
 ];

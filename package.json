@@ -11,7 +11,10 @@
     "lint:eslint": "eslint .",
     "fix:eslint": "eslint . --fix",
     "lint:prettier": "prettier --check .",
-    "fix:prettier": "prettier --write ."
+    "fix:prettier": "prettier --write .",
+    "lint:tsc": "tsc --noEmit",
+    "lint": "concurrently pnpm:lint:*",
+    "fix": "concurrently pnpm:fix:*"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.32.1",
@@ -20,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "concurrently": "^9.1.2",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.2",
     "eslint-plugin-astro": "^1.3.1",
@@ -28,6 +32,7 @@
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.0"
   }
 }

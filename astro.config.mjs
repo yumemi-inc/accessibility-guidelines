@@ -6,19 +6,7 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   integrations: [
     starlight({
-      sidebar: [
-        {
-          items: [
-            // Each item here is one entry in the navigation menu.
-            { label: "Example Guide", slug: "guides/example" },
-          ],
-          label: "Guides",
-        },
-        {
-          autogenerate: { directory: "reference" },
-          label: "Reference",
-        },
-      ],
+      sidebar: [],
       social: {
         github: "https://github.com/withastro/starlight",
       },

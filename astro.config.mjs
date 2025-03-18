@@ -6,6 +6,12 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   integrations: [
     starlight({
+      locales: {
+        root: {
+          label: "日本語",
+          lang: "ja",
+        },
+      },
       sidebar: [
         {
           items: [
@@ -16,9 +22,9 @@ export default defineConfig({
         },
       ],
       social: {
-        github: "https://github.com/withastro/starlight",
+        github: "https://github.com/yumemi-inc/accessibility-guideline",
       },
-      title: "My Docs",
+      title: "YUMEMI Accessibility Guideline",
     }),
   ],
 });

@@ -6,7 +6,15 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   integrations: [
     starlight({
-      sidebar: [],
+      sidebar: [
+        {
+          items: [
+            { label: "はじめに", slug: "about/introduction" },
+            { label: "利用方法", slug: "about/usage" },
+          ],
+          label: "ガイドラインについて",
+        },
+      ],
       social: {
         github: "https://github.com/withastro/starlight",
       },

@@ -2,17 +2,17 @@
 /* TODO： --slはStarlightの略 */
 :root {
   /* フォント設定 */
-  --sl-font: 'Noto Sans JP', sans-serif;
-  --sl-font-mono: 'Noto Sans Mono', monospace;
+  --sl-font: "Noto Sans JP", sans-serif;
+  --sl-font-mono: "Noto Sans Mono", monospace;
 
-  /* カラーパレット（ライトモード） */
+  /* カラーパレット */
   --color-primary: #2563eb;
   --color-primary-light: #60a5fa;
   --color-text: #1a1a1a;
   --color-bg: #ffffff;
   --color-code-bg: #f3f4f6;
 
-  /* Starlightテーマカラー（ライトモード） */
+  /* Starlightテーマカラー */
   --sl-color-bg: var(--color-bg);
   --sl-color-text: var(--color-text);
   --sl-color-bg-inline-code: var(--color-code-bg);
@@ -25,15 +25,15 @@
 }
 
 /* ダークモードのカスタマイズ */
-:root[data-theme='dark'] {
-  /* カラーパレット（ダークモード） */
+:root[data-theme="dark"] {
+  /* カラーパレット */
   --color-primary: #60a5fa;
   --color-primary-light: #93c5fd;
   --color-text: #ffffff;
   --color-bg: #1a1a1a;
   --color-code-bg: #2d2d2d;
 
-  /* Starlightテーマカラー（ダークモード） */
+  /* Starlightテーマカラー */
   --sl-color-bg: var(--color-bg);
   --sl-color-text: var(--color-text);
   --sl-color-bg-inline-code: var(--color-code-bg);

@@ -6,6 +6,7 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   integrations: [
     starlight({
+      customCss: ["./src/styles/custom.css"],
       locales: {
         root: {
           label: "日本語",

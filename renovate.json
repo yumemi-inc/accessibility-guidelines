@@ -1,0 +1,19 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "groupName": "Major updates",
+      "matchUpdateTypes": ["major"]
+    },
+    {
+      "groupName": "Minor updates",
+      "matchUpdateTypes": ["minor"]
+    },
+    {
+      "groupName": "Patch updates",
+      "matchUpdateTypes": ["patch", "digest", "bump", "lockFileMaintenance"]
+    }
+  ]
+}

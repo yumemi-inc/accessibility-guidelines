@@ -20,6 +20,10 @@ export default defineConfig({
           ],
           label: "ガイドラインについて",
         },
+        {
+          autogenerate: { directory: "guidelines" },
+          label: "ガイドライン",
+        },
       ],
       social: {
         github: "https://github.com/yumemi-inc/accessibility-guideline",

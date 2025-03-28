@@ -6,6 +6,9 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   integrations: [
     starlight({
+      components: {
+        Footer: "./src/components/Footer.astro",
+      },
       locales: {
         root: {
           label: "日本語",
@@ -17,6 +20,10 @@ export default defineConfig({
           items: [
             { label: "はじめに", slug: "about/introduction" },
             { label: "利用方法", slug: "about/usage" },
+            {
+              label: "コントリビューションガイド",
+              slug: "about/contribution-guide",
+            },
           ],
           label: "ガイドラインについて",
         },

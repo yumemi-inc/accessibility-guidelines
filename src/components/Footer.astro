@@ -1,7 +1,12 @@
+---
+import packageJson from '../../package.json';
+---
+
 <footer>
   <img alt="CC BY" src="https://i.creativecommons.org/l/by/4.0/88x31.png" />
     <p>当ガイドラインは、<a href="https://creativecommons.org/licenses/by/4.0/deed.ja">クリエイティブ・コモンズ 表示 4.0 国際 ライセンス</a>で提供されています。</p>
 
+    <p>現在のバージョン v{packageJson.version}</p>
     <p class="copyright">© {new Date().getFullYear()} YUMEMI Inc.</p>
 </footer>
 
@@ -16,5 +21,11 @@
   .copyright {
     color: var(--sl-color-text-light);
     font-size: 14px;
+  }
+  
+  .version {
+    color: var(--sl-color-text-light);
+    font-size: 14px;
+    margin-top: -8px;
   }
 </style>

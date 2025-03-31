@@ -49,13 +49,13 @@ importers:
         specifier: 0.14.1
         version: 0.14.1
       textlint:
-        specifier: ^14.5.0
+        specifier: 14.5.0
         version: 14.5.0
       textlint-rule-preset-ja-technical-writing:
-        specifier: ^12.0.2
+        specifier: 12.0.2
         version: 12.0.2
       textlint-rule-preset-jtf-style:
-        specifier: ^3.0.2
+        specifier: 3.0.2
         version: 3.0.2
       typescript:
         specifier: 5.8.2

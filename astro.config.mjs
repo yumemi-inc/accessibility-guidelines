@@ -5,6 +5,7 @@ import { defineConfig } from "astro/config";
 import packageJson from "./package.json";
 // https://astro.build/config
 export default defineConfig({
+  base: "accessibility-guidelines",
   integrations: [
     starlight({
       components: {
@@ -39,4 +40,5 @@ export default defineConfig({
       title: `YUMEMI  Accessibility Guidelines v${packageJson.version}`,
     }),
   ],
+  site: "https://yumemi-inc.github.io",
 });

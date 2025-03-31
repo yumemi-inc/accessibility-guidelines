@@ -4,7 +4,7 @@ title: はじめに
 
 YUMEMI Accessibility Guidelinesは、ゆめみでデザイン、開発するプロダクトやサービスにおいて、多くの方が利用可能にするためのアクセシビリティガイドラインです。ゆめみに関わる全ての人が当ガイドラインの対象です。クライアントに提案する際にも使えるガイドラインを目指します。
 
-詳しくは、[利用方法](/about/usage)をご確認いただき実際のプロジェクトでご利用ください。
+詳しくは、[利用方法](/accessibility-guidelines/about/usage)をご確認いただき実際のプロジェクトでご利用ください。
 
 
 ## 当ガイドラインの構成
@@ -37,7 +37,7 @@ YUMEMI Accessibility Guidelinesは、ゆめみでデザイン、開発するプ�
 
 レベルはアクセシビリティ項目を達成するための優先順位となります。
 
-詳しくは、[レベルごとに使う](/about/usage#%E3%83%AC%E3%83%99%E3%83%AB%E3%81%94%E3%81%A8%E3%81%AB%E4%BD%BF%E3%81%86)を参照してください。
+詳しくは、[レベルごとに使う](/accessibility-guidelines/about/usage#%E3%83%AC%E3%83%99%E3%83%AB%E3%81%94%E3%81%A8%E3%81%AB%E4%BD%BF%E3%81%86)を参照してください。
 
 
 ### ガイドライン説明
@@ -62,4 +62,4 @@ YUMEMI Accessibility Guidelinesは、ゆめみでデザイン、開発するプ�
 
 ## ガイドラインへのフィードバックについて
 
-さまざまな観点からのフィードバックを歓迎しています。詳しくは[コントリビューションガイド](/about/contribution-guide)をご確認ください。
+さまざまな観点からのフィードバックを歓迎しています。詳しくは[コントリビューションガイド](/accessibility-guidelines/about/contribution-guide)をご確認ください。

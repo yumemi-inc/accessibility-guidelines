@@ -34,9 +34,9 @@ export default defineConfig({
         },
       ],
       social: {
-        github: "https://github.com/yumemi-inc/accessibility-guideline",
+        github: "https://github.com/yumemi-inc/accessibility-guidelines",
       },
-      title: `YUMEMI  Accessibility Guideline v${packageJson.version}`,
+      title: `YUMEMI  Accessibility Guidelines v${packageJson.version}`,
     }),
   ],
 });

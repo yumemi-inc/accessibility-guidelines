@@ -1,4 +1,4 @@
-# accessibility-guideline
+# accessibility-guidelines
 
 ゆめみのアクセシビリティガイドライン
 
@@ -11,8 +11,8 @@
 
 1. リポジトリのクローン
 ```bash
-git clone https://github.com/your-organization/accessibility-guideline.git
-cd accessibility-guideline
+git clone https://github.com/your-organization/accessibility-guidelines.git
+cd accessibility-guidelines
 ```
 
 2. 依存パッケージのインストール

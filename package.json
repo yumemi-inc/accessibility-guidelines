@@ -34,7 +34,7 @@
     "globals": "16.0.0",
     "prettier": "3.5.3",
     "prettier-plugin-astro": "0.14.1",
-    "textlint": "14.5.0",
+    "textlint": "14.6.0",
     "textlint-rule-preset-ja-technical-writing": "12.0.2",
     "textlint-rule-preset-jtf-style": "3.0.2",
     "typescript": "5.8.2",

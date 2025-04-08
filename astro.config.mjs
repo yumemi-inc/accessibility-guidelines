@@ -17,6 +17,10 @@ export default defineConfig({
           lang: "ja",
         },
       },
+      logo: {
+        dark: "./src/assets/yumemi_logo_dark.svg",
+        light: "./src/assets/yumemi_logo_light.svg",
+      },
       sidebar: [
         {
           items: [
@@ -35,9 +39,9 @@ export default defineConfig({
         },
       ],
       social: {
-        github: "https://github.com/yumemi-inc/accessibility-guidelines",
+        github: "https://github.com/yumemi-inc/accessibility-guideline",
       },
-      title: `YUMEMI  Accessibility Guidelines v${packageJson.version}`,
+      title: `v${packageJson.version}`,
     }),
   ],
   site: "https://yumemi-inc.github.io",

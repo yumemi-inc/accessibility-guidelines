@@ -6,11 +6,11 @@ import packageJson from "../../package.json";
   <img alt="CC BY" src="https://i.creativecommons.org/l/by/4.0/88x31.png" />
   <p>
     当ガイドラインは、<a
+      class="footer-link"
       href="https://creativecommons.org/licenses/by/4.0/deed.ja"
       >クリエイティブ・コモンズ 表示 4.0 国際 ライセンス</a
     >で提供されています。
   </p>
-
   <p class="version">現在のバージョン v{packageJson.version}</p>
   <p class="copyright">© YUMEMI Inc.</p>
 </footer>
@@ -21,6 +21,11 @@ import packageJson from "../../package.json";
     flex-direction: column;
     align-items: center;
     gap: 16px;
+    padding-bottom: 1rem;
+
+    .footer-link {
+      color: var(--sl-color-accent-high);
+    }
   }
 
   .copyright {
@@ -29,6 +34,9 @@ import packageJson from "../../package.json";
   }
 
   .version {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     color: var(--sl-color-text-light);
     font-size: 14px;
     margin-top: -8px;

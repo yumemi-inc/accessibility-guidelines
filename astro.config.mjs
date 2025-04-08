@@ -11,16 +11,20 @@ export default defineConfig({
       components: {
         Footer: "./src/components/footer.astro",
       },
-      customCss: ["./src/styles/custom.css"],
+      customCss: [
+        "@fontsource/noto-sans-jp/400.css",
+        "@fontsource/noto-sans-jp/700.css",
+        "./src/styles/custom.css",
+      ],
+      logo: {
+        dark: "./src/assets/yumemi_logo_dark.svg",
+        light: "./src/assets/yumemi_logo_light.svg",
+      },
       locales: {
         root: {
           label: "日本語",
           lang: "ja",
         },
-      },
-      logo: {
-        dark: "./src/assets/yumemi_logo_dark.svg",
-        light: "./src/assets/yumemi_logo_light.svg",
       },
       sidebar: [
         {
@@ -40,9 +44,9 @@ export default defineConfig({
         },
       ],
       social: {
-        github: "https://github.com/yumemi-inc/accessibility-guideline",
+        github: "https://github.com/yumemi-inc/accessibility-guidelines",
       },
-      title: `v${packageJson.version}`,
+      title: ` v${packageJson.version}`,
     }),
   ],
   site: "https://yumemi-inc.github.io",

@@ -16,15 +16,15 @@ export default defineConfig({
         "@fontsource/noto-sans-jp/700.css",
         "./src/styles/custom.css",
       ],
-      logo: {
-        dark: "./src/assets/yumemi_logo_dark.svg",
-        light: "./src/assets/yumemi_logo_light.svg",
-      },
       locales: {
         root: {
           label: "日本語",
           lang: "ja",
         },
+      },
+      logo: {
+        dark: "./src/assets/yumemi_logo_dark.svg",
+        light: "./src/assets/yumemi_logo_light.svg",
       },
       sidebar: [
         {

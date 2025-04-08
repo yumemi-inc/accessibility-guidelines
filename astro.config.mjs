@@ -11,6 +11,7 @@ export default defineConfig({
       components: {
         Footer: "./src/components/footer.astro",
       },
+      customCss: ["./src/styles/custom.css"],
       locales: {
         root: {
           label: "日本語",

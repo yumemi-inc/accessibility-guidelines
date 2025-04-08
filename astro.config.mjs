@@ -23,6 +23,7 @@ export default defineConfig({
         },
       },
       logo: {
+        alt: "YUMEMI Accessibility Guidelines",
         dark: "./src/assets/yumemi_logo_dark.svg",
         light: "./src/assets/yumemi_logo_light.svg",
       },

@@ -22,12 +22,12 @@
     "@astrojs/starlight": "^0.32.1",
     "@fontsource/noto-sans-jp": "^5.2.5",
     "astro": "^5.1.5",
-    "sharp": "^0.33.0"
+    "sharp": "^0.34.0"
   },
   "devDependencies": {
-    "@eslint/js": "9.23.0",
+    "@eslint/js": "9.24.0",
     "concurrently": "9.1.2",
-    "eslint": "9.23.0",
+    "eslint": "9.24.0",
     "eslint-config-prettier": "10.1.1",
     "eslint-plugin-astro": "1.3.1",
     "eslint-plugin-jsx-a11y": "6.10.2",
@@ -38,7 +38,7 @@
     "textlint": "14.6.0",
     "textlint-rule-preset-ja-technical-writing": "12.0.2",
     "textlint-rule-preset-jtf-style": "3.0.2",
-    "typescript": "5.8.2",
+    "typescript": "5.8.3",
     "typescript-eslint": "8.29.0"
   },
   "packageManager": "pnpm@10.7.1",

@@ -17,6 +17,8 @@ export default defineConfig({
         "./src/styles/custom.css",
       ],
       head: [
+        // NOTE: デフォルトだと og:site_name に `v0.0.1` のようなバージョンが設定されるため、上書きする
+        // astro.config.mjs の starlight の title オプションで設定しているため
         {
           attrs: {
             content: "YUMEMI Accessibility Guidelines",

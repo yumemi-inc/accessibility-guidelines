@@ -19,7 +19,7 @@
     "fix": "concurrently pnpm:fix:*"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.32.1",
+    "@astrojs/starlight": "^0.33.0",
     "@fontsource/noto-sans-jp": "^5.2.5",
     "astro": "^5.1.5",
     "sharp": "^0.34.0"
@@ -41,7 +41,7 @@
     "typescript": "5.8.3",
     "typescript-eslint": "8.29.1"
   },
-  "packageManager": "pnpm@10.7.1",
+  "packageManager": "pnpm@10.8.0",
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",

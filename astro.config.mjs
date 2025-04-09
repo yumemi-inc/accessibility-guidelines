@@ -44,9 +44,13 @@ export default defineConfig({
           label: "ガイドライン",
         },
       ],
-      social: {
-        github: "https://github.com/yumemi-inc/accessibility-guidelines",
-      },
+      social: [
+        {
+          href: "https://github.com/yumemi-inc/accessibility-guidelines",
+          icon: "github",
+          label: "GitHub",
+        },
+      ],
       title: ` v${packageJson.version}`,
     }),
   ],

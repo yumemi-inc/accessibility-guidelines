@@ -16,6 +16,15 @@ export default defineConfig({
         "@fontsource/noto-sans-jp/700.css",
         "./src/styles/custom.css",
       ],
+      head: [
+        {
+          attrs: {
+            content: "YUMEMI Accessibility Guidelines",
+            property: "og:site_name",
+          },
+          tag: "meta",
+        },
+      ],
       locales: {
         root: {
           label: "日本語",

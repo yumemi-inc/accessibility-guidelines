@@ -2,5 +2,8 @@
   "rules": {
     "preset-ja-technical-writing": true,
     "preset-jtf-style": true
+  },
+  "plugins": {
+    "mdx": true
   }
 }

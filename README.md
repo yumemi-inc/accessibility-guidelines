@@ -32,3 +32,5 @@ pnpm run dev
 - `pnpm run dev` - 開発サーバーを起動します
 - `pnpm run build` - 本番用にサイトをビルドします
 - `pnpm run preview` - ビルドしたサイトをプレビューします
+- `pnpm run lint` - すべてのリントチェックを実行します
+- `pnpm run fix` - リントエラーのうち、自動修正可能なものを修正します

@@ -1,4 +1,8 @@
 {
-  "recommendations": ["astro-build.astro-vscode", "3w36zj6.textlint"],
+  "recommendations": [
+    "astro-build.astro-vscode",
+    "3w36zj6.textlint",
+    "streetsidesoftware.code-spell-checker"
+  ],
   "unwantedRecommendations": []
 }

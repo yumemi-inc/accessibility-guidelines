@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en,ja",
+  "words": ["textlint", "YUMEMI", "noto"],
+  "flagWords": [],
+  "ignorePaths": ["node_modules", "dist", ".git", "pnpm-lock.yaml", ".astro"],
+  "languageSettings": [
+    {
+      "languageId": "markdown,mdx"
+    }
+  ],
+  "dictionaries": [
+    "softwareTerms",
+    "html",
+    "css",
+    "en-common-misspellings",
+    "fullstack",
+    "npm"
+  ]
+}

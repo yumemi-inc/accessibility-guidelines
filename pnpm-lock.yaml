@@ -22,22 +22,22 @@ importers:
         version: 0.34.1
     devDependencies:
       '@cspell/dict-css':
-        specifier: ^4.0.17
+        specifier: 4.0.17
         version: 4.0.17
       '@cspell/dict-en-common-misspellings':
-        specifier: ^2.0.10
+        specifier: 2.0.10
         version: 2.0.10
       '@cspell/dict-fullstack':
-        specifier: ^3.2.6
+        specifier: 3.2.6
         version: 3.2.6
       '@cspell/dict-html':
-        specifier: ^4.0.11
+        specifier: 4.0.11
         version: 4.0.11
       '@cspell/dict-npm':
-        specifier: ^5.1.34
+        specifier: 5.1.34
         version: 5.1.34
       '@cspell/dict-software-terms':
-        specifier: ^5.0.5
+        specifier: 5.0.5
         version: 5.0.5
       '@eslint/js':
         specifier: 9.24.0
@@ -46,7 +46,7 @@ importers:
         specifier: 9.1.2
         version: 9.1.2
       cspell:
-        specifier: ^8.18.1
+        specifier: 8.18.1
         version: 8.18.1
       eslint:
         specifier: 9.24.0

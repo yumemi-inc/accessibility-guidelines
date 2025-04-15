@@ -31,7 +31,7 @@
     "@cspell/dict-en-common-misspellings": "2.0.10",
     "@cspell/dict-fullstack": "3.2.6",
     "@cspell/dict-html": "4.0.11",
-    "@cspell/dict-npm": "5.1.34",
+    "@cspell/dict-npm": "5.2.0",
     "@cspell/dict-software-terms": "5.0.5",
     "@eslint/js": "9.24.0",
     "concurrently": "9.1.2",
@@ -49,7 +49,7 @@
     "textlint-rule-preset-ja-technical-writing": "12.0.2",
     "textlint-rule-preset-jtf-style": "3.0.2",
     "typescript": "5.8.3",
-    "typescript-eslint": "8.29.1"
+    "typescript-eslint": "8.30.1"
   },
   "packageManager": "pnpm@10.8.0",
   "pnpm": {

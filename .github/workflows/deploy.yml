@@ -1,3 +1,5 @@
+# see https://docs.astro.build/ja/guides/deploy/github/
+
 name: Deploy to GitHub Pages
 
 on:

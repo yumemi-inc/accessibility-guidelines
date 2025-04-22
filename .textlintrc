@@ -1,6 +1,8 @@
 {
   "rules": {
-    "preset-ja-technical-writing": true,
+    "preset-ja-technical-writing": {
+      "no-mix-dearu-desumasu": false
+    },
     "preset-jtf-style": true
   },
   "plugins": {

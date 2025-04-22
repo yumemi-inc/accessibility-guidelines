@@ -1,0 +1,23 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## 本ガイドラインについて
+[introduction.md](mdc:src/content/docs/about/introduction.md)を参考にしてください。
+
+## 本ガイドラインの使い方
+[usage.md](mdc:src/content/docs/about/usage.md)を参考にしてください。
+
+## 各ガイドラインの生成ルール
+### テンプレート
+[_template.mdx](mdc:src/content/docs/guidelines/_template.mdx)を参考にしてください
+なお、[_template.mdx](mdc:src/content/docs/guidelines/_template.mdx)と同じ階層にあるファイルは、承認済みのガイドラインです。
+それらのファイルもテンプレートの補足情報として扱ってください。
+
+### 生成手順
+1. 依頼されたガイドラインに該当するWCAG2.2の達成基準を確認する
+2. 関連するガイドラインや文献を確認する
+3. テンプレートに従って以下のディレクトリにガイドラインを生成する
+  - /src/content/docs/guidelines
+4. ガイドラインに対してnpm run lintを実行して校正する

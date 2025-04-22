@@ -65,7 +65,8 @@ body {
   color: var(--sl-color-accent-high);
 }
 
-[aria-current="page"] {
+[aria-current="page"],
+[aria-current="page"]:hover {
   color: var(--sl-color-black);
 }
 

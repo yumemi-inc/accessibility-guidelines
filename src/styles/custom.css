@@ -2,7 +2,7 @@
 :root {
   --sl-font: "Noto Sans JP", sans-serif;
   --sl-color-accent-low: #131e4f;
-  --sl-color-accent: #007cb9;
+  --sl-color-accent: #a5c9e5;
   --sl-color-accent-high: #b3c7ff;
   --sl-color-white: #ffffff;
   --sl-color-gray-1: #eceef2;
@@ -55,9 +55,18 @@ body {
   color: var(--sl-color-accent-high);
 }
 
+/* プライマリーボタンのコントラスト比を確保する */
+.sl-link-button.primary {
+  font-weight: bold;
+}
+
 /* ナビゲーションパネルのリンクのコントラスト比を確保する */
 .right-sidebar-panel a[aria-current="true"] {
   color: var(--sl-color-accent-high);
+}
+
+[aria-current="page"] {
+  color: var(--sl-color-black);
 }
 
 .actions {

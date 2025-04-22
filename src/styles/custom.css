@@ -2,7 +2,7 @@
 :root {
   --sl-font: "Noto Sans JP", sans-serif;
   --sl-color-accent-low: #131e4f;
-  --sl-color-accent: #007cb9;
+  --sl-color-accent: #a5c9e5;
   --sl-color-accent-high: #b3c7ff;
   --sl-color-white: #ffffff;
   --sl-color-gray-1: #eceef2;
@@ -14,6 +14,7 @@
   --sl-color-black: #17181c;
   --sl-color-text-accent: var(--sl-color-accent);
   --sl-color-text-invert: var(--sl-color-white);
+  --sl-color-bg-nav: #1a1a1a;
 
   /* カスタムプロパティの追加 */
   --gap-xs: 8px;
@@ -33,6 +34,7 @@
   --sl-color-gray-6: #eceef2;
   --sl-color-gray-7: #f5f6f8;
   --sl-color-black: #ffffff;
+  --sl-color-bg-nav: #f2f2f2;
 }
 
 body {
@@ -53,7 +55,27 @@ body {
   color: var(--sl-color-accent-high);
 }
 
+/* プライマリーボタンのコントラスト比を確保する */
+.sl-link-button.primary {
+  font-weight: bold;
+}
+
 /* ナビゲーションパネルのリンクのコントラスト比を確保する */
 .right-sidebar-panel a[aria-current="true"] {
   color: var(--sl-color-accent-high);
+}
+
+[aria-current="page"],
+[aria-current="page"]:hover {
+  color: var(--sl-color-black);
+}
+
+.actions {
+  gap: 1rem;
+}
+
+@media (max-width: 50rem) {
+  .hero img {
+    width: min(40%, 20rem);
+  }
 }

@@ -2,7 +2,6 @@ import starlight from "@astrojs/starlight";
 // @ts-check
 import { defineConfig } from "astro/config";
 
-import packageJson from "./package.json";
 // https://astro.build/config
 export default defineConfig({
   base: "accessibility-guidelines",
@@ -10,6 +9,7 @@ export default defineConfig({
     starlight({
       components: {
         Footer: "./src/components/footer.astro",
+        SiteTitle: "./src/components/site-title.astro",
       },
       customCss: [
         "@fontsource/noto-sans-jp/400.css",
@@ -62,7 +62,7 @@ export default defineConfig({
           label: "GitHub",
         },
       ],
-      title: ` v${packageJson.version}`,
+      title: "YUMEMI Accessibility Guidelines",
     }),
   ],
   site: "https://yumemi-inc.github.io",

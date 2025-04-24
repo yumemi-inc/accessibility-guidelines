@@ -1,0 +1,69 @@
+---
+import { Image } from "astro:assets";
+
+import packageJson from "../../package.json";
+import yumemiLogoDark from "../assets/yumemi_logo_dark.svg";
+import yumemiLogoLight from "../assets/yumemi_logo_light.svg";
+---
+
+<div class="root">
+  <a
+    class="title"
+    href="/accessibility-guidelines/"
+  >
+    <Image
+      alt="YUMEMI Accessibility Guidelines"
+      class="logo logo-dark"
+      src={yumemiLogoDark}
+    />
+    <Image
+      alt="YUMEMI Accessibility Guidelines"
+      class="logo logo-light"
+      src={yumemiLogoLight}
+    />
+    <span class="version"> v{packageJson.version} </span>
+  </a>
+</div>
+
+<style>
+  .root {
+    display: flex;
+    align-items: center;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs, 8px);
+    text-decoration: none;
+  }
+
+  .logo {
+    height: calc(var(--sl-nav-height) - 2 * var(--sl-nav-pad-y));
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: 0 50%;
+  }
+
+  .logo-dark {
+    display: none;
+  }
+
+  .logo-light {
+    display: block;
+  }
+
+  :global([data-theme="dark"]) .logo-dark {
+    display: block;
+  }
+
+  :global([data-theme="dark"]) .logo-light {
+    display: none;
+  }
+  .version {
+    font-size: var(--base-font-size);
+    color: var(--sl-color-text-accent);
+    font-weight: 600;
+  }
+</style>

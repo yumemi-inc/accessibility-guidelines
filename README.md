@@ -4,7 +4,7 @@
 
 ## 必要要件
 
-- Node.js 22.14.0 (`.node-version` を参照)
+- Node.js 22.15.0 (`.node-version` を参照)
 - pnpm 最新版
 
 ## セットアップ

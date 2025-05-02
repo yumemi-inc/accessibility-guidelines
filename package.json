@@ -49,7 +49,7 @@
     "textlint-rule-preset-ja-technical-writing": "12.0.2",
     "textlint-rule-preset-jtf-style": "3.0.2",
     "typescript": "5.8.3",
-    "typescript-eslint": "8.31.0"
+    "typescript-eslint": "8.31.1"
   },
   "packageManager": "pnpm@10.10.0",
   "pnpm": {

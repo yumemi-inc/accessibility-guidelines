@@ -23,7 +23,7 @@
   "dependencies": {
     "@astrojs/starlight": "0.34.3",
     "@fontsource/noto-sans-jp": "5.2.5",
-    "astro": "5.8.1",
+    "astro": "5.12.8",
     "sharp": "0.34.2"
   },
   "devDependencies": {

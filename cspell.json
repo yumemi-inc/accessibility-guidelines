@@ -2,7 +2,17 @@
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "version": "0.2",
   "language": "en,ja",
-  "words": ["textlint", "YUMEMI", "noto"],
+  "words": [
+    "textlint",
+    "YUMEMI",
+    "noto",
+    "Sandpack",
+    "codesandbox",
+    "sandpack",
+    "Kashey",
+    "Chakra",
+    "azukiazusa"
+  ],
   "flagWords": [],
   "ignorePaths": ["node_modules", "dist", ".git", "pnpm-lock.yaml", ".astro"],
   "languageSettings": [

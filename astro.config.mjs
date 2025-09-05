@@ -1,3 +1,4 @@
+import react from "@astrojs/react";
 import starlight from "@astrojs/starlight";
 // @ts-check
 import { defineConfig } from "astro/config";
@@ -6,6 +7,7 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   base: "accessibility-guidelines",
   integrations: [
+    react(),
     starlight({
       components: {
         Footer: "./src/components/footer.astro",

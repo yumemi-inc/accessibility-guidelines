@@ -1,0 +1,565 @@
+---
+title: 'フォーカスの可視化'
+description: 'キーボード操作時に現在の位置がはっきり見える表示の実装方法'
+---
+
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import dedent from 'dedent';
+import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
+import { Sandpack } from "@codesandbox/sandpack-react";
+
+<Aside type="tip" title="このガイドラインで目指すこと">
+キーボード操作や画面読み上げなどを利用するユーザーが、現在どの要素を操作しようとしているかを視覚的に把握できるようにします。
+
+- 誤操作を防ぎ、目的の操作にスムーズにたどり着く
+- 「今どこにフォーカスが当たっているか分からない」といった問題を防ぐ
+</Aside>
+
+## このガイドラインが達成されないとどうなるか
+
+<Aside type="caution">
+フォーカスが見えないと、キーボードユーザーは今どの要素にいるのか把揥できず、意図しない操作や混乱の原因になります。
+</Aside>
+
+結果的に、使いやすさが大きく損なわれ、「使えるのに使えない」状態に陥ります。
+
+<Card title="具体例：業務での困りごと" icon="information">
+Aさんは大量のデータをシステムに入力する業務を担当しており、作業をスピードアップするためキーボード操作で画面を移動しています。
+ところが、フォーカスが見えない画面では、どのボタンが選択されているか分かりません。
+その結果、登録ボタンを押すつもりがキャンセルを押してしまうなどのミスが頻発し、業務効率が下がりました。
+</Card>
+
+<Aside type="danger" title="こんなとき、達成されていないかもしれません">
+- CSSで`outline: none;` が指定されており、キーボード操作時にフォーカスが表示されない
+- フォーカスがグレーの細い線などで、背景と同化して見えづらい
+- ライブラリがデフォルトで上記のような挙動で、修正していない
+</Aside>
+
+## 実装例での比較
+
+以下のデモでTabキーを押してフォーカスの違いを体験してください。
+
+<Card title="悪い例: フォーカスが見えない" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <button class="button">ボタン1</button>
+    <button class="button">ボタン2</button>
+    <a href="#" class="link">リンク</a>
+  `}
+  css={dedent`
+    /* アクセシビリティ上問題があるスタイル */
+    .button:focus {
+      outline: none; /* フォーカスが見えなくなる！ */
+    }
+
+    .link:focus {
+      outline: none; /* これも見えない */
+    }
+
+    /* 装飾用スタイル */
+    .button {
+      padding: 12px 24px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .link {
+      color: #007bff;
+      text-decoration: none;
+      padding: 8px;
+    }
+  `}
+  options={{
+    activeFile: "/demo.css"
+  }}
+  client:load
+/>
+
+</Card>
+
+<Card title="良い例: フォーカスがしっかり見える" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <button class="button">ボタン1</button>
+    <button class="button">ボタン2</button>
+    <a href="#" class="link">リンク</a>
+  `}
+  css={dedent`
+    /* アクセシビリティを満たすスタイル */
+    .button:focus-visible {
+      outline: 2px solid #005fcc; /* しっかり見える */
+      outline-offset: 2px;
+    }
+
+    .link:focus-visible {
+      outline: 2px solid #005fcc; /* これも見える */
+      outline-offset: 2px;
+    }
+
+    /* 装飾用スタイル */
+    .button {
+      padding: 12px 24px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .link {
+      color: #007bff;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 4px;
+    }
+  `}
+  options={{
+    activeFile: "/demo.css"
+  }}
+  client:load
+/>
+
+</Card>
+
+## 最低限、すぐに取り組めること
+
+### 要件定義
+
+- 機能要件に「フォーカス可能要素で、キーボード操作時に視認可能なフォーカススタイルを表示する」を明記する
+
+### デザイン
+
+- コンポーネントにフォーカス状態を定義する（FigmaではVariantsで管理する）
+- 推奨スタイルか確認する
+    - 背景や非フォーカス状態とのコントラスト比が3:1以上
+    - フォーカスリングで表現する場合、太さが2px以上
+
+### 開発
+
+- `:focus-visible` 擬似クラスでフォーカスリングを当てる
+- UIライブラリのフォーカス管理機能を活用する
+
+<Card title="最小限の実装例" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <button>ボタン1</button>
+    <button>ボタン2</button>
+    <input type="text" placeholder="テキスト入力">
+    <a href="#">リンク</a>
+  `}
+  css={dedent`
+    :focus-visible {
+      outline: 2px solid #005fcc;
+      outline-offset: 2px;
+    }
+  `}
+  options={{
+    activeFile: "/demo.css"
+  }}
+  client:load
+/>
+
+</Card>
+
+### QA
+
+- Tabキーで画面全体を巡回し、フォーカス表示を確認する
+- コントラスト比が3:1以上であることを確認する
+
+### リリース後
+
+- フォーカスが見えづらい箇所のフィードバックを収集する
+- 気づいた時点で小まめに修正し継続改善する
+
+## よくある問題と解決方法
+
+### デザインが崩れると言われたとき（デザインに合わないと言われたとき）
+
+<Aside type="danger">
+`outline: none` は避け、以下の代替案を検討してください。
+</Aside>
+
+
+#### 1. outline-offsetを使用して要素と重ならないようにする
+
+要素と重ならない位置でフォーカススタイルを表示できます。
+
+<LiveCodeExample
+  html={dedent`
+    <button class="button">ボタン1</button>
+    <button class="button">ボタン2</button>
+    <a href="#" class="link">リンク</a>
+  `}
+  css={dedent`
+    /* outline-offsetで要素から離れた位置に表示 */
+    .button:focus-visible {
+      outline: 2px solid #ff6b35;
+      outline-offset: 4px; /* 要素に重ならずに表示 */
+    }
+
+    .link:focus-visible {
+      outline: 2px solid #ff6b35;
+      outline-offset: 2px; /* リンクも同様 */
+    }
+
+    /* 装飾用スタイル */
+    .button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .link {
+      color: #007bff;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 4px;
+      margin: 8px;
+      display: inline-block;
+    }
+  `}
+  options={{
+    activeFile: "/demo.css"
+  }}
+  client:load
+/>
+
+#### 2. box-shadowを使用する
+
+`box-shadow`を使用するとより柔軟なデザインを実現できます。
+
+<Aside type="caution" title="box-shadowを使用する場合の注意">
+`box-shadow`はWindowsのハイコントラストモードでは表示されないため、透明なoutlineと併用します。
+透明なoutlineは、通常時には表示されませんが、ハイコントラストモードでは表示されます。
+</Aside>
+
+<LiveCodeExample
+  html={dedent`
+    <button class="button">ボタン1</button>
+    <button class="button">ボタン2</button>
+    <a href="#" class="link">リンク</a>
+  `}
+  css={dedent`
+    /* box-shadowを活用した柔軟なデザイン例 */
+.button:focus-visible {
+  outline: 2px solid transparent; /* ハイコントラストモードで表示 */
+  box-shadow:
+    0 0 0 3px rgba(59, 130, 246, 0.6), /* フォーカスリング */
+    0 0 8px 2px rgba(59, 130, 246, 0.3), /* ぼかしフォーカスリング */
+    0 4px 12px rgba(59, 130, 246, 0.3), /* ドロップシャドウ */
+    inset 0 1px 0 rgba(255, 255, 255, 0.2); /* 内側のハイライト */
+}
+
+.link:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow:
+    0 0 0 2px rgba(30, 64, 175, 0.6), /* フォーカスリング */
+    0 0 4px 1px rgba(30, 64, 175, 0.3); /* ぼかしフォーカスリング */
+  background-color: rgba(30, 64, 175, 0.08);
+  border-radius: 3px;
+}
+
+/* 装飾用スタイル */
+.button {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  margin: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.link {
+  color: #1e40af;
+  text-decoration: underline;
+  padding: 4px 2px;
+  margin: 8px;
+  display: inline;
+  transition: all 0.2s ease;
+}
+  `}
+  options={{
+    activeFile: "/demo.css"
+  }}
+  client:load
+/>
+
+#### 3. 背景色やアイコンを変化させる
+
+<Aside type="tip" title="実際のサービスでの工夫例">
+X（旧Twitter）などはフォーカスインジケーターの工夫を行なっており、デザインとの整合性を保ちながら視認性を確保しています。
+
+![Xのフォーカス表示例](/src/assets/images/2.4.7/x-screenshot.jpg)
+
+上の画像では、「いいね」ボタンにフォーカスが当たった際に、ピンクの円形の背景が表示され、どのボタンが選択されているかが明確に分かります。従来のoutlineではなく、デザインに溶け込む形でフォーカス状態を表現している好例です。
+</Aside>
+
+### フォーカスの順序が直感的でない
+
+1. HTML構造を見直す（最優先）
+2. `tabindex`を使用する
+   - `tabindex="-1"`：JavaScriptからのみフォーカス可能
+   - `tabindex="0"`：カスタム要素などを通常のタブ順序に含める
+   - `tabindex="1"` 以上：タブ順序を強制的に変更する（使わない）
+3. CSSで視覚的な順序だけを変更する
+
+```css title="CSS Flexboxで視覚順序を変更"
+.container {
+  display: flex;
+  flex-direction: column;
+}
+.visual-first {
+  order: -1;
+}
+```
+
+### モーダルなポップアップやダイアログでフォーカスが外に逃げる
+
+モーダル表示時にはフォーカスをモーダル内で循環させます。
+
+多くのUIライブラリはこの機能を提供しているため、利用を検討してください。
+
+自前で実装をする場合は以下のライブラリを検討してください。
+- [GitHub - theKashey/react-focus-lock](https://github.com/theKashey/react-focus-lock)
+- [GitHub - focus-trap/focus-trap](https://github.com/focus-trap/focus-trap)
+
+### UIライブラリのフォーカスインジケータのスタイリングが不十分
+
+Material-UIやChakra UIなどでは、テーマやコンポーネント単位で`focus-visible`スタイルの上書きが可能です。
+
+まとめて適用することで、個別対応の手間を減らせます。
+
+#### 参考リンク
+- [Themed components - Material UI](https://mui.com/material-ui/customization/theme-components/#theme-style-overrides)
+- [Global CSS | Chakra UI](https://www.chakra-ui.com/docs/theming/customization/global-css#add-global-styles)
+
+### チェックリスト
+
+### 必ず対応（高優先度）
+
+<Aside type="caution" title="必須チェック項目">
+- [ ] **フォーカスインジケータ**がすべての操作可能な要素で表示される
+- [ ] **コントラスト比**が3:1以上ある（WCAG AAレベル）
+- [ ] **フォーカス順序**が論理的で予測可能
+</Aside>
+
+<Aside type="note" title="推奨項目（中優先度）">
+- [ ] **マウス操作時に**フォーカスインジケータが表示されない
+- [ ] **モーダルやポップアップ**でフォーカスが適切に管理されている
+- [ ] **フォーカスリングの太さ**が2px以上ある
+</Aside>
+
+### 関連項目（別ガイドライン対象）
+
+- [ ] **Tabキーだけで**機能にアクセスできる
+- [ ] フォーカスされた要素が**他の要素で隠されていない**
+
+### 知っておくと便利なこと
+
+#### :focus系の違い
+
+| 擬似クラス | 特徴 | 使用場面 |
+|-----------|------|----------|
+| `:focus` | マウスでもキーボードでもフォーカス時に有効。古いブラウザでも使える | 後方互換性が必要な場合 |
+| `:focus-visible` | 基本的には推奨。キーボード操作時など、「フォーカスを表示するべき場合のみ」に有効 | モダンブラウザでのフォーカス表示 |
+| `:focus-within` | 子要素にフォーカスがある場合も親要素に適用される | フォーム全体やカードコンポーネントのハイライト |
+
+<Aside type="tip" title=":focus-withinの活用">
+`:focus-within`を使用することで、フォームグループ全体やカードコンポーネント全体をハイライトし、どの領域がアクティブかをより明確にできます。
+
+<LiveCodeExample
+  html={dedent`
+    <div class="form-group">
+      <label for="name">お名前</label>
+      <input type="text" id="name" placeholder="山田太郎">
+    </div>
+
+    <div class="form-group">
+      <label for="email">メールアドレス</label>
+      <input type="email" id="email" placeholder="example@example.com">
+    </div>
+
+    <div class="card">
+      <h3>カード内のフォーム</h3>
+      <input type="text" placeholder="カード内の入力欄">
+      <button>送信</button>
+    </div>
+  `}
+  css={dedent`
+    /* :focus-withinでグループ全体をハイライト */
+.form-group:focus-within {
+  border-color: #005fcc;
+  background-color: #f0f8ff;
+  border-radius: 4px;
+}
+
+.card:focus-within {
+  box-shadow: 0 0 0 2px #005fcc;
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}
+
+/* 装飾用スタイル */
+.form-group {
+  margin: 16px 0;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.card {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.card h3 {
+  margin: 0 0 12px 0;
+}
+
+.card input {
+  padding: 8px;
+  margin-right: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.card button {
+  padding: 8px 16px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+  `}
+  options={{
+    activeFile: "/demo.css"
+  }}
+  client:load
+/>
+</Aside>
+
+
+
+<Aside type="note" title=":focus-visibleの後方互換性">
+`:focus-visible`の後方互換性が必要な場合（`:focus`を使用）
+
+```css title="後方互換性を考慮した実装"
+:focus {
+  outline: 2px solid #005fcc;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+```
+</Aside>
+
+#### box-shadowを使用する場合の注意点
+
+`box-shadow`を使用することで柔軟なデザインを実装できます。ただし、Windowsのハイコントラストモードでは表示されないため、`outline: 2px solid transparent`と併用します。ハイコントラストモードでは`transparent`が適切な色に変換されます。
+
+```css title="box-shadowとoutline併用の推奨実装"
+:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 3px red;
+}
+```
+
+##### 参考リンク
+- [box-shadow で実装されたフォーカスリングはハイコントラストモードで表示されない | azukiazusa.dev](https://azukiazusa.dev/blog/box-shadow-focus-ring-not-visible-in-high-contrast-mode/)
+- [強制カラーモードの影響を受けるプロパティ | MDN](https://developer.mozilla.org/ja/docs/Web/CSS/@media/forced-colors#%E5%BC%B7%E5%88%B6%E3%82%AB%E3%83%A9%E3%83%BC%E3%83%A2%E3%83%BC%E3%83%89%E3%81%AE%E5%BD%B1%E9%9F%BF%E3%82%92%E5%8F%97%E3%81%91%E3%82%8B%E3%83%97%E3%83%AD%E3%83%91%E3%83%86%E3%82%A3)
+
+#### フォーカスのアニメーション
+
+```css title="アニメーション付きフォーカスリング"
+:focus-visible {
+  outline-offset: 0;
+  transition: outline-offset 0.25s ease-out;
+}
+:focus-visible {
+  outline-offset: 2px;
+}
+/* アニメーションを望まないユーザーにはアニメーションを無効化する */
+@media (prefers-reduced-motion: reduce) {
+  :focus-visible {
+    transition: none;
+  }
+}
+```
+
+#### ダークモード対応
+
+```css title="CSS変数を利用したダークモード対応の例"
+:root {
+  --focus-ring: #005fcc;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --focus-ring: #4d9fff;
+  }
+}
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+}
+```
+
+#### フォーカストラップの基本的な考え方
+
+1. 最初の要素と最後の要素のフォーカス要素を取得
+2. 最後の要素でTab → 最初の要素へ戻す
+3. 最初の要素でShift+Tab → 最後の要素へ戻す
+4. モーダル表示時に最初の要素へフォーカス
+
+### 参考資料
+
+#### WCAGガイドライン
+- [WCAG 2.2 達成基準 2.4.7 フォーカスの可視化](https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html) - 英語公式ガイド
+- [解説書 達成基準 2.4.7: フォーカスの可視化 | WAI | W3C](https://waic.jp/translations/WCAG22/Understanding/focus-visible.html) - 日本語版
+- [WCAG 2.2 達成基準 2.4.11 フォーカス表示（最小）](https://waic.jp/translations/WCAG22/Understanding/focus-appearance-minimum.html) - AAAレベル基準
+
+#### 技術的リソース
+- [MDN: :focus-visible](https://developer.mozilla.org/ja/docs/Web/CSS/:focus-visible) - CSS擬似クラスの詳細解説
+- [強制カラーモードの影響を受けるプロパティ | MDN](https://developer.mozilla.org/ja/docs/Web/CSS/@media/forced-colors#%E5%BC%B7%E5%88%B6%E3%82%AB%E3%83%A9%E3%83%BC%E3%83%A2%E3%83%BC%E3%83%89%E3%81%AE%E5%BD%B1%E9%9F%BF%E3%82%92%E5%8F%97%E3%81%91%E3%82%8B%E3%83%97%E3%83%AD%E3%83%91%E3%83%86%E3%82%A3) - ハイコントラストモード対応
+- [box-shadow で実装されたフォーカスリングはハイコントラストモードで表示されない | azukiazusa.dev](https://azukiazusa.dev/blog/box-shadow-focus-ring-not-visible-in-high-contrast-mode/) - 実装時の注意点
+
+#### UIライブラリドキュメント
+- [Themed components - Material UI](https://mui.com/material-ui/customization/theme-components/#theme-style-overrides) - MUIのテーマカスタマイズ
+- [Global CSS | Chakra UI](https://www.chakra-ui.com/docs/theming/customization/global-css#add-global-styles) - Chakra UIのグローバルCSS設定
+
+#### ライブラリ
+- [GitHub - theKashey/react-focus-lock](https://github.com/theKashey/react-focus-lock) - React用フォーカストラップライブラリ
+- [GitHub - focus-trap/focus-trap](https://github.com/focus-trap/focus-trap) - フレームワーク非依存のフォーカストラップライブラリ
+
+

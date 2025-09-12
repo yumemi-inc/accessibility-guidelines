@@ -7,6 +7,8 @@ import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
 import dedent from 'dedent';
 import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 import { Sandpack } from "@codesandbox/sandpack-react";
+import { Image } from 'astro:assets';
+import xScreenshot from '../../../assets/images/2.4.7/x-screenshot.jpg';
 
 <Aside type="tip" title="このガイドラインで目指すこと">
 キーボード操作や画面読み上げなどを利用するユーザーが、現在どの要素を操作しようとしているかを視覚的に把握できるようにします。
@@ -302,7 +304,7 @@ Aさんは大量のデータをシステムに入力する業務を担当して�
 <Aside type="tip" title="実際のサービスでの工夫例">
 X（旧Twitter）などはフォーカスインジケーターの工夫を行なっており、デザインとの整合性を保ちながら視認性を確保しています。
 
-![Xのフォーカス表示例](/src/assets/images/2.4.7/x-screenshot.jpg)
+<Image src={xScreenshot} alt="Xのフォーカス表示例" />
 
 上の画像では、「いいね」ボタンにフォーカスが当たった際に、ピンクの円形の背景が表示され、どのボタンが選択されているかが明確に分かります。従来のoutlineではなく、デザインに溶け込む形でフォーカス状態を表現している好例です。
 </Aside>

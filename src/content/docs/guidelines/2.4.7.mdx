@@ -4,6 +4,7 @@ description: 'キーボード操作時に現在の位置がはっきり見える
 ---
 
 import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import dedent from 'dedent';
 import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 import { Sandpack } from "@codesandbox/sandpack-react";
 
@@ -41,33 +42,37 @@ Aさんは大量のデータをシステムに入力する業務を担当して�
 <Card title="悪い例: フォーカスが見えない" icon="error">
 
 <LiveCodeExample
-  html={`<button class="button">ボタン1</button>
-<button class="button">ボタン2</button>
-<a href="#" class="link">リンク</a>`}
-  css={`/* アクセシビリティ上問題があるスタイル */
-.button:focus {
-  outline: none; /* フォーカスが見えなくなる！ */
-}
+  html={dedent`
+    <button class="button">ボタン1</button>
+    <button class="button">ボタン2</button>
+    <a href="#" class="link">リンク</a>
+  `}
+  css={dedent`
+    /* アクセシビリティ上問題があるスタイル */
+    .button:focus {
+      outline: none; /* フォーカスが見えなくなる！ */
+    }
 
-.link:focus {
-  outline: none; /* これも見えない */
-}
+    .link:focus {
+      outline: none; /* これも見えない */
+    }
 
-/* 装飾用スタイル */
-.button {
-  padding: 12px 24px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
+    /* 装飾用スタイル */
+    .button {
+      padding: 12px 24px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-.link {
-  color: #007bff;
-  text-decoration: none;
-  padding: 8px;
-}`}
+    .link {
+      color: #007bff;
+      text-decoration: none;
+      padding: 8px;
+    }
+  `}
   options={{
     activeFile: "/demo.css"
   }}
@@ -79,36 +84,40 @@ Aさんは大量のデータをシステムに入力する業務を担当して�
 <Card title="良い例: フォーカスがしっかり見える" icon="approve-check">
 
 <LiveCodeExample
-  html={`<button class="button">ボタン1</button>
-<button class="button">ボタン2</button>
-<a href="#" class="link">リンク</a>`}
-  css={`/* アクセシビリティを満たすスタイル */
-.button:focus-visible {
-  outline: 2px solid #005fcc; /* しっかり見える */
-  outline-offset: 2px;
-}
+  html={dedent`
+    <button class="button">ボタン1</button>
+    <button class="button">ボタン2</button>
+    <a href="#" class="link">リンク</a>
+  `}
+  css={dedent`
+    /* アクセシビリティを満たすスタイル */
+    .button:focus-visible {
+      outline: 2px solid #005fcc; /* しっかり見える */
+      outline-offset: 2px;
+    }
 
-.link:focus-visible {
-  outline: 2px solid #005fcc; /* これも見える */
-  outline-offset: 2px;
-}
+    .link:focus-visible {
+      outline: 2px solid #005fcc; /* これも見える */
+      outline-offset: 2px;
+    }
 
-/* 装飾用スタイル */
-.button {
-  padding: 12px 24px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
+    /* 装飾用スタイル */
+    .button {
+      padding: 12px 24px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-.link {
-  color: #007bff;
-  text-decoration: none;
-  padding: 8px;
-  border-radius: 4px;
-}`}
+    .link {
+      color: #007bff;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 4px;
+    }
+  `}
   options={{
     activeFile: "/demo.css"
   }}
@@ -138,14 +147,18 @@ Aさんは大量のデータをシステムに入力する業務を担当して�
 <Card title="最小限の実装例" icon="approve-check">
 
 <LiveCodeExample
-  html={`<button>ボタン1</button>
-<button>ボタン2</button>
-<input type="text" placeholder="テキスト入力">
-<a href="#">リンク</a>`}
-  css={`:focus-visible {
-  outline: 2px solid #005fcc;
-  outline-offset: 2px;
-}`}
+  html={dedent`
+    <button>ボタン1</button>
+    <button>ボタン2</button>
+    <input type="text" placeholder="テキスト入力">
+    <a href="#">リンク</a>
+  `}
+  css={dedent`
+    :focus-visible {
+      outline: 2px solid #005fcc;
+      outline-offset: 2px;
+    }
+  `}
   options={{
     activeFile: "/demo.css"
   }}
@@ -178,39 +191,43 @@ Aさんは大量のデータをシステムに入力する業務を担当して�
 要素と重ならない位置でフォーカススタイルを表示できます。
 
 <LiveCodeExample
-  html={`<button class="button">ボタン1</button>
-<button class="button">ボタン2</button>
-<a href="#" class="link">リンク</a>`}
-  css={`/* outline-offsetで要素から離れた位置に表示 */
-.button:focus-visible {
-  outline: 2px solid #ff6b35;
-  outline-offset: 4px; /* 要素に重ならずに表示 */
-}
+  html={dedent`
+    <button class="button">ボタン1</button>
+    <button class="button">ボタン2</button>
+    <a href="#" class="link">リンク</a>
+  `}
+  css={dedent`
+    /* outline-offsetで要素から離れた位置に表示 */
+    .button:focus-visible {
+      outline: 2px solid #ff6b35;
+      outline-offset: 4px; /* 要素に重ならずに表示 */
+    }
 
-.link:focus-visible {
-  outline: 2px solid #ff6b35;
-  outline-offset: 2px; /* リンクも同様 */
-}
+    .link:focus-visible {
+      outline: 2px solid #ff6b35;
+      outline-offset: 2px; /* リンクも同様 */
+    }
 
-/* 装飾用スタイル */
-.button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  margin: 8px;
-  border-radius: 4px;
-  cursor: pointer;
-}
+    /* 装飾用スタイル */
+    .button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-.link {
-  color: #007bff;
-  text-decoration: none;
-  padding: 8px;
-  border-radius: 4px;
-  margin: 8px;
-  display: inline-block;
-}`}
+    .link {
+      color: #007bff;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 4px;
+      margin: 8px;
+      display: inline-block;
+    }
+  `}
   options={{
     activeFile: "/demo.css"
   }}
@@ -227,10 +244,13 @@ Aさんは大量のデータをシステムに入力する業務を担当して�
 </Aside>
 
 <LiveCodeExample
-  html={`<button class="button">ボタン1</button>
-<button class="button">ボタン2</button>
-<a href="#" class="link">リンク</a>`}
-  css={`/* box-shadowを活用した柔軟なデザイン例 */
+  html={dedent`
+    <button class="button">ボタン1</button>
+    <button class="button">ボタン2</button>
+    <a href="#" class="link">リンク</a>
+  `}
+  css={dedent`
+    /* box-shadowを活用した柔軟なデザイン例 */
 .button:focus-visible {
   outline: 2px solid transparent; /* ハイコントラストモードで表示 */
   box-shadow:
@@ -269,7 +289,8 @@ Aさんは大量のデータをシステムに入力する業務を担当して�
   margin: 8px;
   display: inline;
   transition: all 0.2s ease;
-}`}
+}
+  `}
   options={{
     activeFile: "/demo.css"
   }}
@@ -360,22 +381,25 @@ Material-UIやChakra UIなどでは、テーマやコンポーネント単位で
 `:focus-within`を使用することで、フォームグループ全体やカードコンポーネント全体をハイライトし、どの領域がアクティブかをより明確にできます。
 
 <LiveCodeExample
-  html={`<div class="form-group">
-  <label for="name">お名前</label>
-  <input type="text" id="name" placeholder="山田太郎">
-</div>
+  html={dedent`
+    <div class="form-group">
+      <label for="name">お名前</label>
+      <input type="text" id="name" placeholder="山田太郎">
+    </div>
 
-<div class="form-group">
-  <label for="email">メールアドレス</label>
-  <input type="email" id="email" placeholder="example@example.com">
-</div>
+    <div class="form-group">
+      <label for="email">メールアドレス</label>
+      <input type="email" id="email" placeholder="example@example.com">
+    </div>
 
-<div class="card">
-  <h3>カード内のフォーム</h3>
-  <input type="text" placeholder="カード内の入力欄">
-  <button>送信</button>
-</div>`}
-  css={`/* :focus-withinでグループ全体をハイライト */
+    <div class="card">
+      <h3>カード内のフォーム</h3>
+      <input type="text" placeholder="カード内の入力欄">
+      <button>送信</button>
+    </div>
+  `}
+  css={dedent`
+    /* :focus-withinでグループ全体をハイライト */
 .form-group:focus-within {
   border-color: #005fcc;
   background-color: #f0f8ff;
@@ -438,7 +462,8 @@ Material-UIやChakra UIなどでは、テーマやコンポーネント単位で
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}`}
+}
+  `}
   options={{
     activeFile: "/demo.css"
   }}

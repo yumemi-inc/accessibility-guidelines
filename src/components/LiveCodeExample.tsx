@@ -1,6 +1,7 @@
 import type { SandpackProps } from "@codesandbox/sandpack-react";
 
 import { Sandpack } from "@codesandbox/sandpack-react";
+import dedent from "dedent";
 import React from "react";
 
 import styles from "./LiveCodeExample.module.css";
@@ -26,24 +27,25 @@ const LiveCodeExample: React.FC<Props> = ({
         files={{
           "/demo.css": css,
           "/demo.html": html,
-          "/demo.js": `
-            const html = await fetch('demo.html').then(response => response.text());
-            document.getElementById('demo-container').innerHTML = html;
+          "/index.html": dedent`
+            <!DOCTYPE html>
+            <html lang="ja">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>${title}</title>
+                <link rel="stylesheet" href="/styles.css" />
+                <link rel="stylesheet" href="demo.css">
+            </head>
+            <body>
+                <div class="container" id="demo-container"></div>
+                <script type="module">
+                    const html = await fetch('demo.html').then(response => response.text());
+                    document.getElementById('demo-container').innerHTML = html;
+                </script>
+            </body>
+            </html>
           `,
-          "/index.html": `<!DOCTYPE html>
-      <html lang="ja">
-      <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>${title}</title>
-          <link rel="stylesheet" href="/styles.css" />
-          <link rel="stylesheet" href="demo.css">
-      </head>
-      <body>
-          <div class="container" id="demo-container"></div>
-          <script type="module" src="demo.js"></script>
-      </body>
-      </html>`,
           ...sandpackProps.files,
         }}
         options={{

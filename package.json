@@ -56,9 +56,9 @@
     "textlint-rule-preset-ja-technical-writing": "12.0.2",
     "textlint-rule-preset-jtf-style": "3.0.2",
     "typescript": "5.9.2",
-    "typescript-eslint": "8.43.0"
+    "typescript-eslint": "8.44.0"
   },
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.16.1",
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",

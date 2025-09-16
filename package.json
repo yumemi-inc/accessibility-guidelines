@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.3.0",
-    "@astrojs/starlight": "0.35.2",
+    "@astrojs/starlight": "0.35.3",
     "@codesandbox/sandpack-react": "^2.20.0",
     "@fontsource/noto-sans-jp": "5.2.7",
     "@types/react": "^19.1.12",

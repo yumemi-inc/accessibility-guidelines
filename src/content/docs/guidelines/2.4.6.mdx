@@ -1,48 +1,700 @@
 ---
-title: 'コンテンツの目的を明確に伝える見出しとラベル'
+title: '見出しとラベルの明確化'
+description: 'コンテンツの目的を正確に伝える見出しとラベルの実装方法'
 ---
 
-## 目的
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import dedent from 'dedent';
+import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
-見出しとラベルがコンテンツの目的を明確に伝えることで、ユーザーが情報を効率的に理解し、必要な情報へ素早くアクセスできるようにします。特に、スクリーンリーダーを使用するユーザーや、認知的な負荷を軽減したいユーザーにとって重要な配慮となります。
+<Aside type="tip" title="このガイドラインで目指すこと">
+見出しとラベルがコンテンツの目的を明確に伝えることで、ユーザーが情報を効率的に理解し、必要な情報へ素早くアクセスできるようにします。
 
-## 該当するケース
+- スクリーンリーダー利用者が内容を素早く把握できる
+- 認知的な負荷を軽減して使いやすくする
+</Aside>
 
-- ウェブページの見出し（h1〜h6要素）
-- フォームの入力フィールドのラベル
-- ボタンやリンクのテキスト
-- セクションやコンテンツブロックの見出し
-- データテーブルの見出しセル
-- メニュー項目やナビゲーション要素のラベル
+## このガイドラインが達成されないとどうなるか
 
-## 関連するWCAG達成基準
+<Aside type="caution">
+曖昧な見出しやラベルは、ユーザーが目的の情報を見つけられず、フォーム入力でミスを引き起こす原因となります。
+</Aside>
 
-- [WCAG2.2 達成基準2.4.6 見出し及びラベル](https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels) ([日本語版](https://waic.jp/translations/WCAG21/Understanding/headings-and-labels))
+結果的に、サービスの利用効率が低下し、ユーザー体験が大きく損なわれます。
+
+<Card title="具体例：ECサイトでの困りごと" icon="information">
+Eさんはオンラインで商品を購入しようとしていました。
+しかし、「詳細」「その他」「こちら」といった曖昧な見出しやリンクが多く、
+どこをクリックすれば商品仕様が見られるのか分からず、
+結局購入を諦めて他のサイトで購入しました。
+</Card>
+
+<Aside type="danger" title="こんなとき、達成されていないかもしれません">
+- 見出しが「詳細」「その他」など曖昧
+- フォームのラベルが「入力1」「入力2」のような意味のない名前
+- リンクテキストが「こちら」「詳しくはこちら」だけ
+- ボタンがすべて「送信」「次へ」で区別できない
+- 同じページ内に同じ見出しが複数ある
+</Aside>
+
+## 実装例での比較
+
+### 見出しの明確化
+
+<Card title="悪い例: 曖昧な見出し" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <article>
+      <h2>概要</h2>
+      <p>新しいサービスを開始しました。</p>
+      
+      <h3>詳細</h3>
+      <p>このサービスは様々な機能を提供します。</p>
+      
+      <h3>その他</h3>
+      <p>お問い合わせはこちらから。</p>
+      
+      <h3>情報</h3>
+      <p>料金は月額1,000円です。</p>
+    </article>
+  `}
+  css={dedent`
+    article {
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    
+    h2 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+    
+    h3 {
+      color: #666;
+      font-size: 18px;
+      margin: 20px 0 8px 0;
+    }
+    
+    p {
+      color: #555;
+      line-height: 1.6;
+    }
+  `}
+  client:load
+/>
+
+何の概要か、どんな詳細か、全く分かりません。
+
+</Card>
+
+<Card title="良い例: 具体的で明確な見出し" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <article>
+      <h2>クラウドストレージサービス開始のお知らせ</h2>
+      <p>2024年1月より、新しいクラウドストレージサービスを開始しました。</p>
+      
+      <h3>提供する主な機能</h3>
+      <p>100GBの大容量ストレージ、自動バックアップ、共有機能を提供します。</p>
+      
+      <h3>料金プラン</h3>
+      <p>個人プラン：月額1,000円、法人プラン：月額5,000円</p>
+      
+      <h3>サポート窓口</h3>
+      <p>技術的なお問い合わせは、専用サポートフォームからお願いします。</p>
+    </article>
+  `}
+  css={dedent`
+    article {
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    
+    h2 {
+      color: #1a1a1a;
+      font-size: 24px;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    
+    h3 {
+      color: #333;
+      font-size: 18px;
+      margin: 20px 0 8px 0;
+      font-weight: 600;
+    }
+    
+    p {
+      color: #555;
+      line-height: 1.6;
+    }
+  `}
+  client:load
+/>
+
+各セクションの内容が見出しから明確に理解できます。
+
+</Card>
+
+### フォームラベルの改善
+
+<Card title="悪い例: 不明確なラベル" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <form>
+      <div class="form-group">
+        <label for="field1">入力1</label>
+        <input type="text" id="field1" placeholder="入力してください">
+      </div>
+      
+      <div class="form-group">
+        <label for="field2">入力2</label>
+        <input type="text" id="field2" placeholder="入力してください">
+      </div>
+      
+      <div class="form-group">
+        <label for="field3">選択</label>
+        <select id="field3">
+          <option>選択してください</option>
+          <option>オプション1</option>
+          <option>オプション2</option>
+        </select>
+      </div>
+      
+      <button type="submit">送信</button>
+    </form>
+  `}
+  css={dedent`
+    form {
+      max-width: 400px;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 4px;
+      color: #666;
+      font-size: 14px;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    button {
+      background: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  `}
+  client:load
+/>
+
+何を入力すべきか全く分かりません。
+
+</Card>
+
+<Card title="良い例: 明確で具体的なラベル" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <form>
+      <div class="form-group">
+        <label for="full-name">
+          お名前（漢字）
+          <span class="required">必須</span>
+        </label>
+        <input 
+          type="text" 
+          id="full-name" 
+          placeholder="例：山田 太郎"
+          required>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">
+          メールアドレス
+          <span class="required">必須</span>
+        </label>
+        <input 
+          type="email" 
+          id="email" 
+          placeholder="例：yamada@example.com"
+          required>
+        <span class="hint">確認メールを送信します</span>
+      </div>
+      
+      <div class="form-group">
+        <label for="prefecture">
+          お住まいの都道府県
+          <span class="optional">任意</span>
+        </label>
+        <select id="prefecture">
+          <option value="">選択してください</option>
+          <option value="tokyo">東京都</option>
+          <option value="osaka">大阪府</option>
+          <option value="other">その他</option>
+        </select>
+      </div>
+      
+      <button type="submit">
+        登録内容を確認する
+      </button>
+    </form>
+  `}
+  css={dedent`
+    form {
+      max-width: 400px;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    
+    .required {
+      display: inline-block;
+      background: #dc3545;
+      color: white;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 8px;
+      font-weight: normal;
+    }
+    
+    .optional {
+      display: inline-block;
+      background: #6c757d;
+      color: white;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 8px;
+      font-weight: normal;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    input:focus, select:focus {
+      outline: 2px solid #007bff;
+      outline-offset: 2px;
+    }
+    
+    .hint {
+      display: block;
+      margin-top: 4px;
+      color: #666;
+      font-size: 13px;
+    }
+    
+    button {
+      background: #007bff;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    button:hover {
+      background: #0056b3;
+    }
+  `}
+  client:load
+/>
+
+各フィールドに何を入力すべきか明確です。
+
+</Card>
+
+### リンクテキストの改善
+
+<Card title="良い例: 具体的なリンクテキスト" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="content">
+      <h2>製品情報</h2>
+      <p>
+        新製品の詳細については
+        <a href="#">製品カタログ（PDF 2.5MB）をダウンロード</a>
+        してご確認ください。
+      </p>
+      
+      <h2>サポート</h2>
+      <p>
+        技術的なご質問は
+        <a href="#">技術サポートフォーム</a>
+        からお問い合わせください。
+        営業時間は
+        <a href="#">サポート営業時間のページ</a>
+        でご確認いただけます。
+      </p>
+      
+      <h2>関連記事</h2>
+      <ul>
+        <li><a href="#">導入事例：A社での活用方法</a></li>
+        <li><a href="#">製品比較：競合製品との違い</a></li>
+        <li><a href="#">よくある質問：セットアップ編</a></li>
+      </ul>
+    </div>
+  `}
+  css={dedent`
+    .content {
+      padding: 20px;
+      max-width: 600px;
+    }
+    
+    h2 {
+      color: #333;
+      font-size: 20px;
+      margin: 24px 0 12px 0;
+    }
+    
+    p {
+      line-height: 1.8;
+      color: #555;
+      margin-bottom: 16px;
+    }
+    
+    a {
+      color: #0066cc;
+      text-decoration: underline;
+    }
+    
+    a:hover {
+      color: #0052a3;
+    }
+    
+    a:focus {
+      outline: 2px solid #0066cc;
+      outline-offset: 2px;
+    }
+    
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    li {
+      margin-bottom: 12px;
+      padding-left: 20px;
+      position: relative;
+    }
+    
+    li::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: #0066cc;
+    }
+  `}
+  client:load
+/>
+
+リンク先の内容が明確に分かります。
+
+</Card>
+
+## 最低限、すぐに取り組めること
+
+### 要件定義
+
+- コンテンツ構造と見出し階層を設計する
+- フォームの各項目の説明を明文化する
+
+### デザイン
+
+- 見出しのビジュアル階層を定義する
+- ラベルとヒントテキストのスタイルを統一する
+
+### 開発
+
+- 意味のある見出しテキストを使用する
+- フォームラベルを必ず関連付ける
+- リンクテキストを具体的にする
+
+<Card title="最小限の実装例" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <!-- 見出しの階層構造 -->
+    <h1>サービス名</h1>
+    <h2>主要機能</h2>
+    <h3>機能A：自動バックアップ</h3>
+    <h3>機能B：共有設定</h3>
+    
+    <!-- 明確なフォームラベル -->
+    <label for="phone">
+      電話番号（ハイフンなし）
+    </label>
+    <input 
+      type="tel" 
+      id="phone" 
+      pattern="[0-9]{10,11}"
+      placeholder="09012345678">
+    
+    <!-- 具体的なリンクテキスト -->
+    <a href="guide.pdf">
+      初期設定ガイド（PDF 1.2MB）
+    </a>
+  `}
+  css={dedent`
+    h1, h2, h3 {
+      margin: 16px 0 8px 0;
+    }
+    
+    h1 { font-size: 28px; }
+    h2 { font-size: 22px; }
+    h3 { font-size: 18px; }
+    
+    label {
+      display: block;
+      margin: 16px 0 4px 0;
+      font-weight: 600;
+    }
+    
+    input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 200px;
+    }
+    
+    a {
+      color: #0066cc;
+      text-decoration: underline;
+      display: inline-block;
+      margin: 16px 0;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+### QA
+
+- スクリーンリーダーで見出しジャンプが機能するか確認
+- フォーム入力時にラベルが読み上げられるか確認
+- リンクテキストだけで行き先が分かるか確認
+
+### リリース後
+
+- ユーザーからの「分かりにくい」というフィードバックを収集
+- アナリティクスで離脱率の高いページを特定
+
+## よくある問題と解決方法
+
+### 長すぎる見出しの対処
+
+```html title="適切な長さの見出し"
+<!-- 悪い例：長すぎる -->
+<h2>
+  2024年1月1日より開始する新しいクラウドストレージサービスの
+  料金プランと各種オプションサービスについての詳細説明
+</h2>
+
+<!-- 良い例：簡潔で明確 -->
+<h2>料金プランとオプション</h2>
+<p>2024年1月1日サービス開始</p>
+```
+
+### 動的コンテンツでのラベル管理
+
+<LiveCodeExample
+  html={dedent`
+    <div class="dynamic-form">
+      <div class="form-field">
+        <label for="addr-1">
+          配送先住所 1
+          <button 
+            class="remove-btn" 
+            aria-label="配送先住所1を削除">
+            ✕
+          </button>
+        </label>
+        <input type="text" id="addr-1">
+      </div>
+      
+      <div class="form-field">
+        <label for="addr-2">
+          配送先住所 2
+          <button 
+            class="remove-btn"
+            aria-label="配送先住所2を削除">
+            ✕
+          </button>
+        </label>
+        <input type="text" id="addr-2">
+      </div>
+      
+      <button class="add-btn">
+        ＋ 配送先を追加
+      </button>
+    </div>
+  `}
+  css={dedent`
+    .dynamic-form {
+      max-width: 400px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    
+    .form-field {
+      margin-bottom: 16px;
+    }
+    
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    
+    .remove-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    
+    .add-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  `}
+  client:load
+/>
 
 ## チェックリスト
 
-- 各見出しは、その後に続くコンテンツの内容を正確に反映していること
-- フォームのラベルは、入力が期待される情報の種類を明確に示していること
-- ボタンやリンクのテキストは、その機能や遷移先を理解できる内容になっていること
-- 見出しの階層構造は論理的で、コンテンツの関係性を正しく表現していること
-- 同じレベルの見出しは、同じような種類の情報を表していること
-- ラベルや見出しは、コンテキストを考慮しても曖昧さがないこと
+### 必ず対応（高優先度）
 
-## ヒント
+<Aside type="caution" title="必須チェック項目">
+- [ ] **見出し**がコンテンツを正確に表現している
+- [ ] **フォームラベル**が入力内容を明確に説明している
+- [ ] **リンクテキスト**が遷移先を具体的に示している
+</Aside>
 
-- 見出しやラベルを評価する際は、その要素が単独で存在する場合と、周囲のコンテンツと組み合わさった場合の両方の視点で確認してください
-- 技術的な実装方法（HTMLの見出し要素やラベル要素の使用）だけでなく、実際のテキスト内容が適切かどうかも確認してください
-- 見出しやラベルの目的は、ユーザーがコンテンツを効率的にスキャンできるようにすることです。この観点から評価してください
+<Aside type="note" title="推奨項目（中優先度）">
+- [ ] **見出し階層**が論理的に構成されている
+- [ ] **エラーメッセージ**が具体的な修正方法を示している
+- [ ] **ボタンテキスト**が実行される動作を明確に表現している
+</Aside>
 
-## チェック方法
+### 関連項目（別ガイドライン対象）
 
-- スクリーンリーダーを使用して、見出しとラベルの読み上げを確認する
-- 見出しの階層構造を視覚的に確認する
-- コードレビューで適切なHTML要素が使用されているか確認する
-- ユーザビリティテストで、見出しやラベルが意図した通りに理解されているか確認する
+- [ ] **見出し構造**が適切にマークアップされている（1.3.1）
+- [ ] **ラベル**が入力フィールドと関連付けられている（1.3.5）
 
-## 補足・注意点
+## 知っておくと便利なこと
 
-- 見出しやラベルは、コンテンツの構造を反映するだけでなく、ユーザーが期待する情報を提供する必要があります
-- 技術的な実装が正しくても、テキスト内容が不適切な場合は達成基準を満たしていないことになります
-- 見出しの階層構造は、必ずしも視覚的な見た目と一致する必要はありませんが、論理的な順序を維持する必要があります 
+### 良い見出しの特徴
+
+| 特徴 | 悪い例 | 良い例 |
+|------|--------|--------|
+| 具体的 | 「情報」 | 「営業時間」 |
+| 簡潔 | 「お客様へのお知らせ事項について」 | 「お知らせ」 |
+| 独立して理解可能 | 「詳細」 | 「製品仕様」 |
+| 一貫性がある | 「価格」「料金」「費用」が混在 | 「料金」で統一 |
+
+<Aside type="tip" title="スクリーンリーダーでの見出しナビゲーション">
+多くのスクリーンリーダーユーザーは、見出しジャンプ機能を使って素早くコンテンツを把握します。
+
+- NVDA/JAWS: Hキーで次の見出しへジャンプ
+- VoiceOver: ローターで見出しナビゲーション
+- 見出しリストを表示して全体構造を把握
+
+明確な見出しは、この機能の効果を最大化します。
+</Aside>
+
+### フォームラベルのベストプラクティス
+
+```html title="包括的なラベル設計"
+<div class="form-group">
+  <label for="password">
+    パスワード
+    <span class="required">必須</span>
+  </label>
+  <input 
+    type="password" 
+    id="password"
+    aria-describedby="password-hint"
+    required>
+  <small id="password-hint">
+    8文字以上、英数字を含む
+  </small>
+</div>
+```
+
+### 参考資料
+
+#### WCAGガイドライン
+- [WCAG 2.2 達成基準 2.4.6 見出し及びラベル](https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels) - 英語公式ガイド
+- [解説書 達成基準 2.4.6: 見出し及びラベル | WAI | W3C](https://waic.jp/translations/WCAG22/Understanding/headings-and-labels) - 日本語版
+- [WCAG 2.2 達成基準 2.4.10 セクション見出し](https://www.w3.org/WAI/WCAG22/Understanding/section-headings) - AAAレベル基準
+
+#### 技術的リソース
+- [MDN: HTML見出し要素](https://developer.mozilla.org/ja/docs/Web/HTML/Element/Heading_Elements) - h1-h6要素の解説
+- [MDN: label要素](https://developer.mozilla.org/ja/docs/Web/HTML/Element/label) - フォームラベルの実装
+- [WebAIM: Creating Accessible Forms](https://webaim.org/techniques/forms/) - アクセシブルなフォーム設計
+
+#### ライティングガイド
+- [Plain Language Guidelines](https://www.plainlanguage.gov/) - 明確な文章の書き方
+- [Nielsen Norman Group: Writing for the Web](https://www.nngroup.com/topic/writing-web/) - Web向けライティング

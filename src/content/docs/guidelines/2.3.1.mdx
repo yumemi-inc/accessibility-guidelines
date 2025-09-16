@@ -1,57 +1,503 @@
 ---
-title: '危険な画面の点滅・閃光を防止する'
+title: '危険な閃光の防止'
+description: 'てんかん発作を引き起こさない安全なアニメーションの実装方法'
 ---
 
-## 目的
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import dedent from 'dedent';
+import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
-光感受性発作を引き起こす可能性のある閃光を避けることで、光感受性発作を持つユーザーが安全にコンテンツを利用できるようにします。特に、てんかんや光感受性発作の既往歴を持つユーザーを保護することを目的としています。
+<Aside type="tip" title="このガイドラインで目指すこと">
+光感受性発作を引き起こす可能性のある閃光を避けることで、てんかんや光感受性発作の既往歴を持つユーザーが安全にコンテンツを利用できるようにします。
 
-## 該当するケース
+- すべてのユーザーが安全にコンテンツを閲覧できる
+- 健康被害のリスクを最小限に抑える
+</Aside>
 
-- アニメーションや動画コンテンツ
-- インタラクティブな要素の視覚的フィードバック
-- 広告やバナー
-- スライドショーやカルーセル
-- ゲームのエフェクトや演出
-- ローディングアニメーション
-- 背景や壁紙の動的な変化
+## このガイドラインが達成されないとどうなるか
 
-## 関連するWCAG達成基準
+<Aside type="caution">
+適切な対策がされていない閃光は、一部のユーザーにてんかん発作を引き起こし、重篤な健康被害を与える可能性があります。
+</Aside>
 
-- [WCAG2.2 達成基準2.3.1 3回の閃光、又は閾値以下](https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold) ([日本語版](https://waic.jp/translations/WCAG21/Understanding/three-flashes-or-below-threshold))
+結果的に、法的責任を問われる可能性もあり、サービスの信頼性を大きく損ないます。
+
+<Card title="具体例：動画サイトでの危険" icon="information">
+1997年、日本のテレビアニメ「ポケットモンスター」の一シーンで、
+赤と青の激しい閃光が約4秒間続いた結果、
+685人以上の子どもがてんかん様の発作を起こし、150人以上が入院しました。
+これにより、閃光の危険性が広く認識されるようになりました。
+</Card>
+
+<Aside type="danger" title="こんなとき、達成されていないかもしれません">
+- ローディングアニメーションが高速で点滅している
+- スライドショーが瞬間的に切り替わる
+- エラー時に画面全体が赤く点滅する
+- 動画広告に激しいストロボ効果が含まれている
+- ゲームのエフェクトで画面が激しく明滅する
+</Aside>
+
+## 実装例での比較
+
+### ローディングアニメーション
+
+<Card title="悪い例: 高速で点滅するローダー" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="loader-container">
+      <div class="bad-loader"></div>
+      <p>読み込み中...</p>
+    </div>
+    
+    <p class="warning">⚠ 警告: このアニメーションは危険です</p>
+  `}
+  css={dedent`
+    .loader-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    
+    /* 問題：1秒間に10回点滅 */
+    @keyframes dangerous-flash {
+      0%, 100% { opacity: 1; background: #ff0000; }
+      50% { opacity: 0; background: #ffffff; }
+    }
+    
+    .bad-loader {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      animation: dangerous-flash 0.1s infinite;
+    }
+    
+    .warning {
+      color: #d32f2f;
+      font-weight: bold;
+      margin-top: 20px;
+      padding: 10px;
+      background: #ffebee;
+      border-radius: 4px;
+    }
+  `}
+  client:load
+/>
+
+1秒間に10回の点滅は、安全基準の3倍以上で非常に危険です。
+
+</Card>
+
+<Card title="良い例: 安全なローディングアニメーション" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="loader-container">
+      <div class="safe-loader">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <p>読み込み中...</p>
+    </div>
+  `}
+  css={dedent`
+    .loader-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    
+    .safe-loader {
+      display: flex;
+      gap: 8px;
+    }
+    
+    /* 安全：滑らかなアニメーション */
+    @keyframes safe-pulse {
+      0%, 100% { 
+        transform: scale(1);
+        opacity: 0.3;
+      }
+      50% { 
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+    
+    .dot {
+      width: 12px;
+      height: 12px;
+      background: #2196f3;
+      border-radius: 50%;
+      animation: safe-pulse 1.5s infinite;
+    }
+    
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  `}
+  client:load
+/>
+
+滑らかなアニメーションで、閃光のリスクがありません。
+
+</Card>
+
+### アラート表示
+
+<Card title="悪い例: 画面全体が点滅" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="alert-bad">
+      <strong>⚠ エラー</strong>
+      <p>操作に失敗しました</p>
+    </div>
+  `}
+  css={dedent`
+    /* 問題：大きな領域が点滅 */
+    @keyframes flash-alert {
+      0%, 100% { background: #ffffff; }
+      50% { background: #ff0000; }
+    }
+    
+    .alert-bad {
+      padding: 20px;
+      border: 2px solid #ff0000;
+      border-radius: 8px;
+      animation: flash-alert 0.5s 3;
+      text-align: center;
+    }
+    
+    .alert-bad strong {
+      color: #d32f2f;
+      font-size: 24px;
+    }
+  `}
+  client:load
+/>
+
+大きな領域の点滅は危険です。
+
+</Card>
+
+<Card title="良い例: 安全なアラート表示" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="alert-good" role="alert">
+      <div class="alert-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-2h2v2h-2zm0-4V7h2v6h-2z"/>
+        </svg>
+      </div>
+      <div>
+        <strong>エラー</strong>
+        <p>操作に失敗しました</p>
+      </div>
+    </div>
+  `}
+  css={dedent`
+    /* 安全：フェードイン効果 */
+    @keyframes safe-fade-in {
+      from { 
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .alert-good {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: #ffebee;
+      border-left: 4px solid #d32f2f;
+      border-radius: 4px;
+      animation: safe-fade-in 0.3s ease-out;
+    }
+    
+    .alert-icon {
+      color: #d32f2f;
+      flex-shrink: 0;
+    }
+    
+    .alert-good strong {
+      color: #d32f2f;
+      display: block;
+      margin-bottom: 4px;
+    }
+    
+    .alert-good p {
+      margin: 0;
+      color: #666;
+    }
+  `}
+  client:load
+/>
+
+フェードイン効果で安全に注目を集めます。
+
+</Card>
+
+## 最低限、すぐに取り組めること
+
+### 要件定義
+
+- アニメーションのガイドラインを定める
+- 閃光効果を禁止するルールを明記する
+
+### デザイン
+
+- アニメーションは滑らかなトランジションを使用する
+- 点滅ではなくフェード効果を使用する
+
+### 開発
+
+- CSSアニメーションの最小間隔を0.4秒以上に設定する
+- `prefers-reduced-motion`に対応する
+
+<Card title="最小限の実装例" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <style>
+      /* 動きを減らす設定への対応 */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+      
+      /* 安全なアニメーションの例 */
+      @keyframes safe-animation {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      .animated-element {
+        animation: safe-animation 0.5s ease-in-out;
+      }
+    </style>
+    
+    <div class="animated-element">
+      この要素は安全にアニメーションします
+    </div>
+  `}
+  css={dedent`
+    .animated-element {
+      padding: 20px;
+      background: #e3f2fd;
+      border-radius: 8px;
+      text-align: center;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+### QA
+
+- すべてのアニメーションをチェックする
+- 1秒間に3回以上の変化がないか確認する
+- `prefers-reduced-motion`の動作をテストする
+
+### リリース後
+
+- ユーザーからのフィードバックを収集する
+- 新しいコンテンツ追加時にレビューを徹底する
+
+## よくある問題と解決方法
+
+### スライドショーの自動再生
+
+```javascript title="安全なスライドショーの実装"
+// 悪い例：瞬間的な切り替え
+slider.style.transition = 'none';
+slider.style.transform = `translateX(${position}px)`;
+
+// 良い例：スムーズなトランジション
+slider.style.transition = 'transform 0.5s ease-in-out';
+slider.style.transform = `translateX(${position}px)`;
+```
+
+### 動画コンテンツの対応
+
+<LiveCodeExample
+  html={dedent`
+    <div class="video-container">
+      <div class="video-warning">
+        <h3>⚠ 警告</h3>
+        <p>この動画には一部閃光効果が含まれます。
+        光感受性てんかんをお持ちの方はご注意ください。</p>
+        <button class="play-button">再生する</button>
+        <button class="skip-button">スキップ</button>
+      </div>
+      <!-- 動画プレーヤー -->
+    </div>
+  `}
+  css={dedent`
+    .video-container {
+      position: relative;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      min-height: 300px;
+    }
+    
+    .video-warning {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 400px;
+    }
+    
+    .video-warning h3 {
+      color: #ffc107;
+      margin: 0 0 16px 0;
+      font-size: 24px;
+    }
+    
+    .video-warning p {
+      margin: 0 0 20px 0;
+      line-height: 1.6;
+    }
+    
+    .play-button, .skip-button {
+      padding: 10px 20px;
+      margin: 0 8px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .play-button {
+      background: #2196f3;
+      color: white;
+    }
+    
+    .play-button:hover {
+      background: #1976d2;
+    }
+    
+    .skip-button {
+      background: #666;
+      color: white;
+    }
+    
+    .skip-button:hover {
+      background: #555;
+    }
+  `}
+  client:load
+/>
+
+### アクセシビリティ設定の提供
+
+```javascript title="ユーザー設定の実装例"
+const userSettings = {
+  reduceMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  disableAnimations: false,
+  autoplayVideos: false
+};
+
+// 設定に基づいてアニメーションを制御
+if (userSettings.reduceMotion || userSettings.disableAnimations) {
+  document.body.classList.add('no-animations');
+}
+```
 
 ## チェックリスト
 
-- コンテンツ内に1秒間で3回以上の閃光がないこと
-- 閃光の領域が画面の25%以下であること
-- 閃光の明るさが一般的な明るさの3倍以下であること
-- 閃光の色が赤以外の色を使用していること
-- ユーザーが閃光を制御できるオプションを提供していること
-- 閃光を伴うコンテンツに警告を表示していること
+### 必ず対応（高優先度）
 
-## ヒント
+<Aside type="caution" title="必須チェック項目">
+- [ ] **1秒間に3回以上**の点滅がない
+- [ ] **赤色の閃光**を避けている
+- [ ] **画面の25%以上**の領域が点滅しない
+</Aside>
 
-- 閃光の頻度は、1秒間に3回を超えると危険とされています
-- 閃光の領域は、画面の25%を超えると危険性が高まります
-- 赤色の閃光は特に危険性が高いため、避けるべきです
-- 閃光の明るさは、周囲の明るさの3倍を超えないようにします
-- 複数の閃光が同時に発生する場合は、それらを1つの閃光としてカウントします
+<Aside type="note" title="推奨項目（中優先度）">
+- [ ] **prefers-reduced-motion**に対応している
+- [ ] **動画コンテンツ**に警告を表示している
+- [ ] **アニメーションを無効化**するオプションがある
+</Aside>
 
-## チェック方法
+### 関連項目（別ガイドライン対象）
 
-- 目視による確認
-  - コンテンツを再生し、閃光の頻度と領域を確認
-  - 明るさの変化を確認
-- ツールによる確認
-  - 閃光検出ツールを使用して自動チェック
-  - 画面録画を分析して閃光の頻度を測定
-- コードレビュー
-  - アニメーションやトランジションの設定を確認
-  - 明るさや色の変化に関するコードを確認
+- [ ] **一時停止・停止・非表示**ができる（2.2.2）
+- [ ] **アニメーション**が必須でない（2.3.3）
 
-## 補足・注意点
+## 知っておくと便利なこと
 
-- 閃光の定義には、明るさの急激な変化だけでなく、色の急激な変化も含まれます
-- ユーザーが閃光を制御できるオプションを提供することで、より安全な体験を提供できます
-- 光感受性発作のリスクは個人差が大きいため、可能な限り閃光を避けることが望ましいです
-- 医療的なコンテンツなど、閃光が避けられない場合は、事前に警告を表示する必要があります 
+### 安全な間隔の計算
+
+| 間隔 | 頻度 | 安全性 |
+|------|------|-------|
+| 0.1秒 | 10回/秒 | 危険 |
+| 0.33秒 | 3回/秒 | ギリギリ |
+| 0.4秒以上 | 2.5回/秒以下 | 安全 |
+
+<Aside type="tip" title="prefers-reduced-motionの活用">
+ユーザーのOS設定を尊重することで、よりアクセシブルな体験を提供できます。
+
+```css
+/* 通常のアニメーション */
+.element {
+  animation: slide 1s ease-in-out;
+}
+
+/* 動きを減らす設定が有効な場合 */
+@media (prefers-reduced-motion: reduce) {
+  .element {
+    animation: none;
+  }
+}
+```
+</Aside>
+
+### テストツール
+
+- [PEAT (Photosensitive Epilepsy Analysis Tool)](https://trace.umd.edu/peat/) - 閃光分析ツール
+- [Lighthouse](https://developers.google.com/web/tools/lighthouse) - Chrome DevToolsの監査ツール
+
+### 参考資料
+
+#### WCAGガイドライン
+- [WCAG 2.2 達成基準 2.3.1 3回の閃光、又は閾値以下](https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold) - 英語公式ガイド
+- [解説書 達成基準 2.3.1: 3回の閃光、又は閾値以下 | WAI | W3C](https://waic.jp/translations/WCAG22/Understanding/three-flashes-or-below-threshold) - 日本語版
+- [WCAG 2.2 達成基準 2.3.2 3回の閃光](https://www.w3.org/WAI/WCAG22/Understanding/three-flashes) - AAAレベル基準
+
+#### 技術的リソース
+- [MDN: prefers-reduced-motion](https://developer.mozilla.org/ja/docs/Web/CSS/@media/prefers-reduced-motion) - CSSメディアクエリ
+- [Web Animations API](https://developer.mozilla.org/ja/docs/Web/API/Web_Animations_API) - JavaScriptアニメーションAPI
+
+#### 医学的情報
+- [日本てんかん協会](https://www.jea-net.jp/) - てんかんに関する情報
+- [Epilepsy Foundation](https://www.epilepsy.com/what-is-epilepsy/seizure-triggers/photosensitivity) - 光感受性発作に関する情報（英語）

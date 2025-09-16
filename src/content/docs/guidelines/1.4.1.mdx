@@ -1,50 +1,628 @@
 ---
 title: '色以外の情報伝達手段の確保'
+description: '色覚特性の違いや環境に左右されない確実な情報伝達の実装方法'
 ---
 
-## 目的
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import dedent from 'dedent';
+import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
-色覚特性の違いや、モノクロ表示などの環境においても、情報の伝達や操作の実行が可能であることを保証するためです。色のみに依存した情報提供は、色覚特性の違いや環境によって情報が伝わらない可能性もあるため、色以外の手段でも情報を伝える必要があります。
+<Aside type="tip" title="このガイドラインで目指すこと">
+色覚特性の違いや、モノクロ表示などの環境においても、情報の伝達や操作の実行が可能であることを保証します。
 
-## 該当するケース
+- 色が見えない・区別できない環境でも情報が伝わる
+- 誰もが確実に情報を受け取れるようにする
+</Aside>
 
-- フォームの必須項目を赤色のみで示している場合
-- エラーメッセージを赤色のみで表示している場合
-- グラフやチャートで色のみで情報を区別している場合
-- リンクテキストを色のみで示している場合
-- ステータスや状態を色のみで示している場合（例：緑=成功、赤=失敗）
+## このガイドラインが達成されないとどうなるか
 
-## 関連するWCAG達成基準
+<Aside type="caution">
+色のみで情報を伝えると、色覚特性の違いを持つ約320万人の日本人や、モノクロプリンタで印刷した人が情報を理解できません。
+</Aside>
 
-- [WCAG2.2 達成基準1.4.1 色の使用](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color) ([日本語版](https://waic.jp/translations/WCAG21/Understanding/use-of-color))
+結果的に、重要な情報の見落としや誤操作が発生し、サービスの利用に支障をきたします。
+
+<Card title="具体例：フォーム送信での困りごと" icon="information">
+Cさんは重要な申請フォームを入力していました。
+必須項目が赤色のみで示されていたため、色覚特性により見分けがつかず、必須項目を見落として送信。
+エラーが出ましたが、どの項目がエラーなのかも赤色のみで示されており、結局申請期限に間に合いませんでした。
+</Card>
+
+<Aside type="danger" title="こんなとき、達成されていないかもしれません">
+- 必須項目を赤文字のみで表示している
+- グラフの凡例が色のみで区別されている
+- エラーメッセージが赤色になるだけで、アイコンやテキストがない
+- リンクが色の変化のみで、下線がない
+- ステータス表示が「緑=OK」「赤=NG」の色のみ
+</Aside>
+
+## 実装例での比較
+
+### フォームの必須項目表示
+
+<Card title="悪い例: 色のみで必須項目を表示" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <form>
+      <div class="form-group">
+        <label for="name" class="required">お名前</label>
+        <input type="text" id="name" placeholder="山田太郎">
+      </div>
+      
+      <div class="form-group">
+        <label for="email" class="required">メールアドレス</label>
+        <input type="email" id="email" placeholder="example@example.com">
+      </div>
+      
+      <div class="form-group">
+        <label for="tel">電話番号</label>
+        <input type="tel" id="tel" placeholder="03-1234-5678">
+      </div>
+      
+      <p class="note">※赤い項目は必須項目です</p>
+    </form>
+  `}
+  css={dedent`
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: normal;
+    }
+    
+    /* 問題：色のみで必須を表現 */
+    label.required {
+      color: #dc2626;
+    }
+    
+    input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    .note {
+      font-size: 14px;
+      color: #666;
+      margin-top: 16px;
+    }
+  `}
+  client:load
+/>
+
+色覚特性により赤色が見分けにくい場合、どれが必須項目か分かりません。
+
+</Card>
+
+<Card title="良い例: 色以外の手段も併用" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <form>
+      <div class="form-group">
+        <label for="name2">
+          お名前 <span class="required-badge">必須</span>
+        </label>
+        <input type="text" id="name2" placeholder="山田太郎" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="email2">
+          メールアドレス <span class="required-badge">必須</span>
+        </label>
+        <input type="email" id="email2" placeholder="example@example.com" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="tel2">
+          電話番号 <span class="optional-badge">任意</span>
+        </label>
+        <input type="tel" id="tel2" placeholder="03-1234-5678">
+      </div>
+    </form>
+  `}
+  css={dedent`
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: normal;
+    }
+    
+    .required-badge {
+      display: inline-block;
+      background: #dc2626;
+      color: white;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 4px;
+      font-weight: bold;
+    }
+    
+    .optional-badge {
+      display: inline-block;
+      background: #6b7280;
+      color: white;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 4px;
+    }
+    
+    input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    input:required {
+      border-left: 4px solid #dc2626;
+    }
+  `}
+  client:load
+/>
+
+テキストラベルと左ボーダーで、色が見えなくても必須項目が分かります。
+
+</Card>
+
+### エラー表示
+
+<Card title="悪い例: 色のみでエラーを表示" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="message-list">
+      <div class="message error">パスワードが短すぎます</div>
+      <div class="message success">メールアドレスは有効です</div>
+      <div class="message warning">パスワードの強度：弱</div>
+    </div>
+  `}
+  css={dedent`
+    .message-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .message {
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    /* 問題：色のみで状態を表現 */
+    .message.error {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    
+    .message.success {
+      background: #d1fae5;
+      color: #059669;
+    }
+    
+    .message.warning {
+      background: #fed7aa;
+      color: #ea580c;
+    }
+  `}
+  client:load
+/>
+
+色が見分けられない場合、メッセージの重要度が判断できません。
+
+</Card>
+
+<Card title="良い例: アイコンとテキストも併用" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="message-list">
+      <div class="message error" role="alert">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <span>
+          <strong>エラー:</strong> パスワードが短すぎます
+        </span>
+      </div>
+      
+      <div class="message success">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+        </svg>
+        <span>
+          <strong>成功:</strong> メールアドレスは有効です
+        </span>
+      </div>
+      
+      <div class="message warning">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <span>
+          <strong>警告:</strong> パスワードの強度：弱
+        </span>
+      </div>
+    </div>
+  `}
+  css={dedent`
+    .message-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .message {
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: 4px solid;
+    }
+    
+    .icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    
+    /* 色に加えてアイコンと太い左ボーダーで区別 */
+    .message.error {
+      background: #fee2e2;
+      color: #dc2626;
+      border-left-color: #dc2626;
+    }
+    
+    .message.success {
+      background: #d1fae5;
+      color: #059669;
+      border-left-color: #059669;
+    }
+    
+    .message.warning {
+      background: #fed7aa;
+      color: #ea580c;
+      border-left-color: #ea580c;
+    }
+  `}
+  client:load
+/>
+
+アイコン、テキストラベル、ボーダーで状態が明確に区別できます。
+
+</Card>
+
+### グラフの凡例
+
+<Card title="良い例: パターンとラベルを併用" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="chart-container">
+      <div class="bar-chart">
+        <div class="bar-group">
+          <div class="bar pattern-dots" style="height: 80%">
+            <span class="value">80%</span>
+          </div>
+          <span class="label">東京</span>
+        </div>
+        
+        <div class="bar-group">
+          <div class="bar pattern-stripes" style="height: 65%">
+            <span class="value">65%</span>
+          </div>
+          <span class="label">大阪</span>
+        </div>
+        
+        <div class="bar-group">
+          <div class="bar pattern-grid" style="height: 45%">
+            <span class="value">45%</span>
+          </div>
+          <span class="label">福岡</span>
+        </div>
+      </div>
+      
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-box pattern-dots"></div>
+          <span>東京 (ドット)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-box pattern-stripes"></div>
+          <span>大阪 (ストライプ)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-box pattern-grid"></div>
+          <span>福岡 (グリッド)</span>
+        </div>
+      </div>
+    </div>
+  `}
+  css={dedent`
+    .chart-container {
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 8px;
+    }
+    
+    .bar-chart {
+      display: flex;
+      gap: 24px;
+      height: 200px;
+      align-items: flex-end;
+      margin-bottom: 20px;
+    }
+    
+    .bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .bar {
+      width: 100%;
+      background: #3b82f6;
+      border-radius: 4px 4px 0 0;
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 8px;
+    }
+    
+    .value {
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    .label {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    /* パターンで区別 */
+    .pattern-dots {
+      background-color: #3b82f6;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.3) 20%, transparent 20%);
+      background-size: 8px 8px;
+    }
+    
+    .pattern-stripes {
+      background-color: #10b981;
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 5px,
+        rgba(255,255,255,0.3) 5px,
+        rgba(255,255,255,0.3) 10px
+      );
+    }
+    
+    .pattern-grid {
+      background-color: #f59e0b;
+      background-image: 
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3) 2px, transparent 2px, transparent 10px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3) 2px, transparent 2px, transparent 10px);
+    }
+    
+    .legend {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .legend-box {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid #d1d5db;
+    }
+  `}
+  client:load
+/>
+
+色だけでなくパターンとラベルで、モノクロ印刷でも区別できます。
+
+</Card>
+
+## 最低限、すぐに取り組めること
+
+### 要件定義
+
+- 機能要件に「色のみで情報を伝えない」を明記する
+- 色覚多様性を考慮した設計方針を定める
+
+### デザイン
+
+- 必須項目には「必須」ラベルを付ける
+- エラー・警告・成功にはアイコンを併用する
+- グラフにはパターンやラベルを追加する
+
+### 開発
+
+- フォームバリデーションにテキストメッセージを含める
+- ステータス表示にアイコンやテキストを追加する
+- リンクには下線やアイコンを付ける
+
+<Card title="最小限の実装例" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <!-- リンクは下線で識別 -->
+    <p>
+      詳しくは<a href="#">こちらのページ</a>をご覧ください。
+    </p>
+    
+    <!-- ステータスはアイコン＋テキスト -->
+    <div class="status-list">
+      <div class="status">
+        ✓ 完了
+      </div>
+      <div class="status">
+        ⚠ 処理中
+      </div>
+      <div class="status">
+        ✕ エラー
+      </div>
+    </div>
+  `}
+  css={dedent`
+    a {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+    
+    a:hover {
+      text-decoration: none;
+    }
+    
+    .status-list {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    
+    .status {
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      border: 1px solid #d1d5db;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+### QA
+
+- モノクロ表示で情報が伝わるか確認する
+- 色覚シミュレーターでテストする
+- スクリーンリーダーで情報が伝わるか確認する
+
+### リリース後
+
+- ユーザーフィードバックを収集する
+- アクセシビリティ監査を定期実施する
+
+## よくある問題と解決方法
+
+### デザインの制約があると言われた場合
+
+#### 段階的な改善アプローチ
+
+1. **最小限の対応**：テキストラベルを追加
+2. **次のステップ**：アイコンを併用
+3. **理想的な対応**：パターンや形状も活用
+
+### 既存システムの改修が難しい場合
+
+```css title="CSSのみで最小限の改善"
+/* 必須項目に * を追加 */
+.required::after {
+  content: " *";
+  color: #dc2626;
+  font-weight: bold;
+}
+
+/* リンクに下線を追加 */
+a {
+  text-decoration: underline !important;
+}
+
+/* エラーメッセージにアイコンを追加 */
+.error::before {
+  content: "⚠ ";
+  font-size: 1.2em;
+}
+```
 
 ## チェックリスト
 
-- 色のみで情報を伝えていないこと
-- 色で示された情報が、テキストやアイコン、パターン、形状などの他の手段でも伝えられていること
-- グラフやチャートで色を使用する場合、凡例やラベルで情報が補完されていること
-- フォームの必須項目が、色以外の手段（例：アスタリスク、テキスト）でも示されていること
-- エラーメッセージが、色以外の手段（例：アイコン、テキスト）でも示されていること
-- リンクテキストが、下線やアイコンなど色以外の手段でも識別できること
+### 必ず対応（高優先度）
 
-## ヒント
+<Aside type="caution" title="必須チェック項目">
+- [ ] **必須項目**がテキストやマークで示されている
+- [ ] **エラーメッセージ**にテキスト説明がある
+- [ ] **リンク**が下線などで識別可能
+</Aside>
 
-- 色の違いをモノクロで表示したときに、情報が区別できるか確認しましょう
-- 色覚シミュレーションツールを使用して、色覚特性の違いによる影響を確認しましょう
-- 情報の重要度や優先度を考慮し、適切な補完手段を選択しましょう
-- デザインの一貫性を保ちながら、色以外の手段を組み合わせましょう
+<Aside type="note" title="推奨項目（中優先度）">
+- [ ] **ステータス表示**にアイコンやテキストがある
+- [ ] **グラフ**にパターンやラベルがある
+- [ ] **警告・成功**メッセージにアイコンがある
+</Aside>
 
-## チェック方法
+### 関連項目（別ガイドライン対象）
 
-- ブラウザの開発者ツールを使用して、色を無効化した状態で確認する
-- モノクロ表示のシミュレーションツールを使用する
-- 色覚シミュレーションテストツールを使用する
-- スクリーンリーダーを使用して、色以外の情報が適切に伝わるか確認する
-- コードレビューで、色のみに依存した実装がないか確認する
+- [ ] **コントラスト比**が適切である（1.4.3）
+- [ ] **フォーカス表示**が見やすい（2.4.7）
 
-## 補足・注意点
+## 知っておくと便利なこと
 
-- 色の使用自体を禁止するものではなく、色に依存しない情報提供を推奨しています
-- 色のコントラスト比に関する要件は、達成基準1.4.3コントラスト（最低限）で規定されています
-- 色以外の手段を追加する際は、視覚的なノイズにならないよう注意しましょう
-- 色覚特性の違いは多様であり、特定の色の組み合わせを避けることが望ましいです
+### 色覚特性の種類と見え方
+
+| タイプ | 割合 | 特徴 |
+|-------|------|------|
+| P型（1型） | 男性の約1.5% | 赤の感度が低い |
+| D型（2型） | 男性の約3.5% | 緑の感度が低い |
+| T型（3型） | 約0.001% | 青の感度が低い |
+
+<Aside type="tip" title="ユニバーサルデザインカラー">
+以下の色の組み合わせは比較的区別しやすいとされています：
+
+- 青とオレンジ
+- 青と黄色
+- 紫と緑黄色
+
+避けるべき組み合わせ：
+- 赤と緑
+- 黄緑と黄色
+- 青と紫
+</Aside>
+
+### テストツール
+
+- [Sim Daltonism](https://michelf.ca/projects/sim-daltonism/) - macOS用色覚シミュレータ
+- [Colorblinding](https://chrome.google.com/webstore/detail/colorblinding/dgbgleaofjainknadoffbjkclicbbgaa) - Chrome拡張機能
+- [WCAG Color Contrast Checker](https://webaim.org/resources/contrastchecker/) - コントラスト比チェッカー
+
+### 参考資料
+
+#### WCAGガイドライン
+- [WCAG 2.2 達成基準 1.4.1 色の使用](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color) - 英語公式ガイド
+- [解説書 達成基準 1.4.1: 色の使用 | WAI | W3C](https://waic.jp/translations/WCAG22/Understanding/use-of-color) - 日本語版
+
+#### 技術的リソース
+- [色覚の多様性と色覚バリアフリーなプレゼンテーション](https://www.nig.ac.jp/color/gen/) - 色覚多様性の詳細解説
+- [カラーユニバーサルデザイン推奨配色セット](https://jfly.uni-koeln.de/colorset/) - 推奨色セット
+
+#### デザインガイド
+- [Inclusive Design Principles](https://inclusivedesignprinciples.org/) - インクルーシブデザインの原則
+- [Material Design - Accessibility](https://material.io/design/usability/accessibility.html) - Material Designのアクセシビリティガイド

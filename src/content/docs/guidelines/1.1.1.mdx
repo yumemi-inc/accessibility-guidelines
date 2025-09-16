@@ -1,52 +1,468 @@
 ---
-title: '非テキストコンテンツには代替テキストを提供する'
+title: '代替テキストの提供'
+description: '視覚情報を利用できないユーザーのための画像やアイコンへの代替テキスト実装方法'
 ---
 
-## 目的
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import dedent from 'dedent';
+import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
-視覚的な情報に依存できないユーザー（スクリーンリーダー利用者など）が、画像やアイコンなどの非テキストコンテンツの内容や目的を理解できるようにするためです。これにより、すべてのユーザーが同等の情報へアクセスできるようになります。
+<Aside type="tip" title="このガイドラインで目指すこと">
+視覚的な情報に依存できないユーザー（スクリーンリーダー利用者など）が、画像やアイコンなどの非テキストコンテンツの内容や目的を理解できるようにします。
 
-## 該当するケース
+- すべてのユーザーが同等の情報へアクセスできる
+- 画像が表示されない環境でも内容を理解できる
+</Aside>
 
-- 画像（写真、イラスト、図表、グラフ、インフォグラフィックなど）
-- アイコン（メニュー、ツールバー、通知、ステータスインジケーターなど）
-- 装飾的な要素
-- インタラクティブな要素（ボタン、リンク、フォームコントロールなど）
-- メディアコンテンツ（動画サムネイル、プレーヤーコントロールなど）
-- ドキュメント内の視覚要素（フローチャート、組織図、テクニカルイラストレーションなど）
+## このガイドラインが達成されないとどうなるか
 
-## 関連するWCAG達成基準
+<Aside type="caution">
+代替テキストがないと、スクリーンリーダー利用者は画像の内容を理解できず、重要な情報を見逃してしまいます。
+</Aside>
 
-- [WCAG2.2 達成基準1.1.1 非テキストコンテンツ](https://www.w3.org/WAI/WCAG22/Understanding/non-text-content) ([日本語版](https://waic.jp/translations/WCAG21/Understanding/non-text-content))
+結果的に、サービスの利用に支障をきたし、「見える人」と「見えない人」で情報格差が生じます。
+
+<Card title="具体例：ECサイトでの困りごと" icon="information">
+Bさんはスクリーンリーダーを使用してオンラインショッピングを楽しんでいます。
+しかし、商品画像に代替テキストがないサイトでは、商品の色や形状が分からずに購入判断ができません。
+結果的に、そのサイトの利用を諦めて他のサイトで買い物をするようになりました。
+</Card>
+
+<Aside type="danger" title="こんなとき、達成されていないかもしれません">
+- 画像に`alt`属性が設定されていない
+- アイコンボタンに何の説明もない（「ボタン」としか読み上げられない）
+- 装飾画像にも長い説明文が入っている（読み上げが冗長になる）
+- 「image001.jpg」のようなファイル名が代替テキストになっている
+</Aside>
+
+## 実装例での比較
+
+### 情報を伝える画像の例
+
+<Card title="悪い例: 代替テキストがない" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <article>
+      <h2>今月のイベント</h2>
+      <img src="https://picsum.photos/300/200" width="300" height="200">
+      <p>詳細はこちらからご確認ください。</p>
+    </article>
+  `}
+  css={dedent`
+    article {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    img {
+      display: block;
+      margin: 16px 0;
+      border-radius: 4px;
+    }
+  `}
+  client:load
+/>
+
+スクリーンリーダーでは画像の存在は分かりますが、内容が全く伝わりません。
+
+</Card>
+
+<Card title="良い例: 適切な代替テキスト" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <article>
+      <h2>今月のイベント</h2>
+      <img
+        src="https://picsum.photos/300/200"
+        alt="12月15日土曜日、午後2時から5時、東京国際フォーラムで開催される冬のテクノロジーカンファレンス2024のメインビジュアル"
+        width="300"
+        height="200">
+      <p>詳細はこちらからご確認ください。</p>
+    </article>
+  `}
+  css={dedent`
+    article {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    img {
+      display: block;
+      margin: 16px 0;
+      border-radius: 4px;
+    }
+  `}
+  client:load
+/>
+
+画像の内容が具体的に伝わり、視覚情報がなくても理解できます。
+
+</Card>
+
+### アイコンボタンの例
+
+<Card title="悪い例: アイコンだけのボタン" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="toolbar">
+      <button class="icon-button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12h18m-6-6l6 6-6 6"/>
+        </svg>
+      </button>
+      <button class="icon-button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="10" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+      </button>
+      <button class="icon-button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2l12 0 0 12-6 8-6-8z"/>
+        </svg>
+      </button>
+    </div>
+  `}
+  css={dedent`
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      padding: 16px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+
+    .icon-button {
+      width: 48px;
+      height: 48px;
+      border: none;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+    }
+
+    .icon-button:hover {
+      background: #f0f0f0;
+    }
+
+    .icon-button:focus-visible {
+      outline: 2px solid #005fcc;
+      outline-offset: 2px;
+    }
+  `}
+  client:load
+/>
+
+スクリーンリーダーでは「ボタン」としか読み上げられず、何のボタンか分かりません。
+
+</Card>
+
+<Card title="良い例: アクセシブルなアイコンボタン" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="toolbar">
+      <button class="icon-button" aria-label="次へ進む">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M3 12h18m-6-6l6 6-6 6"/>
+        </svg>
+      </button>
+      <button class="icon-button" aria-label="ロック">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="10" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+      </button>
+      <button class="icon-button" aria-label="ブックマーク">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M6 2l12 0 0 12-6 8-6-8z"/>
+        </svg>
+      </button>
+    </div>
+  `}
+  css={dedent`
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      padding: 16px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+
+    .icon-button {
+      width: 48px;
+      height: 48px;
+      border: none;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+    }
+
+    .icon-button:hover {
+      background: #f0f0f0;
+    }
+
+    .icon-button:focus-visible {
+      outline: 2px solid #005fcc;
+      outline-offset: 2px;
+    }
+  `}
+  client:load
+/>
+
+各ボタンの機能が明確に伝わります。
+
+</Card>
+
+## 最低限、すぐに取り組めること
+
+### 要件定義
+
+- 機能要件に「すべての画像、アイコンに代替テキストを提供する」を明記する
+- 装飾的な画像と情報を伝える画像の判断基準を定義する
+
+### デザイン
+
+- 画像やアイコンを配置する際、その説明文も一緒に定義する
+- アイコンボタンにはツールチップやラベルの表示を検討する
+
+### 開発
+
+- 画像には必ず`alt`属性を設定する
+- アイコンボタンには`aria-label`を設定する
+- 装飾画像には`alt=""`を設定する
+
+<Card title="最小限の実装例" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <!-- 情報を伝える画像 -->
+    <img src="product.jpg" alt="赤いTシャツ、サイズM">
+
+    <!-- 装飾的な画像 -->
+    <img src="decoration.jpg" alt="" role="presentation">
+
+    <!-- アイコンボタン -->
+    <button aria-label="メニューを開く">
+      <svg aria-hidden="true"><!-- アイコン --></svg>
+    </button>
+
+    <!-- テキスト付きアイコン -->
+    <button>
+      <svg aria-hidden="true"><!-- アイコン --></svg>
+      <span>保存</span>
+    </button>
+  `}
+  css={dedent`
+    button {
+      padding: 8px 16px;
+      margin: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: white;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button:focus-visible {
+      outline: 2px solid #005fcc;
+      outline-offset: 2px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+### QA
+
+- スクリーンリーダーで全画像・アイコンを確認する
+- 画像を非表示にしてもページの意味が通じるか確認する
+
+### リリース後
+
+- ユーザーからのフィードバックを収集する
+- 代替テキストの質を継続的に改善する
+
+## よくある問題と解決方法
+
+### 代替テキストに何を書けばいいか分からない
+
+#### 判断フローチャート
+
+1. **装飾的な画像かどうか**
+   - Yes → `alt=""`
+   - No → 次へ
+
+2. **リンクやボタンの一部かどうか**
+   - Yes → リンク先や機能を説明
+   - No → 次へ
+
+3. **テキストが含まれる画像かどうか**
+   - Yes → そのテキストを代替テキストに
+   - No → 画像の内容を簡潔に説明
+
+### 複雑な図表やグラフの場合
+
+<LiveCodeExample
+  html={dedent`
+    <figure>
+      <img
+        src="chart.jpg"
+        alt="2024年の月別売上推移グラフ。詳細は以下の表を参照">
+      <figcaption>
+        <details>
+          <summary>グラフの詳細データ</summary>
+          <table>
+            <thead>
+              <tr>
+                <th>月</th>
+                <th>売上（万円）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1月</td><td>100</td></tr>
+              <tr><td>2月</td><td>120</td></tr>
+              <tr><td>3月</td><td>150</td></tr>
+            </tbody>
+          </table>
+        </details>
+      </figcaption>
+    </figure>
+  `}
+  css={dedent`
+    figure {
+      margin: 20px 0;
+      padding: 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    figcaption {
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    details {
+      margin-top: 8px;
+    }
+
+    summary {
+      cursor: pointer;
+      color: #005fcc;
+      text-decoration: underline;
+    }
+
+    table {
+      margin-top: 12px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #f5f5f5;
+      font-weight: bold;
+    }
+  `}
+  client:load
+/>
+
+### 背景画像の場合
+
+CSSの背景画像は装飾的なものとして扱われるため、情報を伝える画像には使用しないようにします。
+
+```css title="情報を伝える画像はHTMLで実装"
+/* 悪い例：情報をCSS背景画像で表示 */
+.hero {
+  background-image: url('important-info.jpg');
+}
+
+/* 良い例：装飾的な背景のみCSS */
+.decorative {
+  background-image: url('pattern.svg');
+}
+```
 
 ## チェックリスト
 
-- すべての非テキストコンテンツに適切な代替テキストが提供されていること
-- 装飾的な要素には空の代替テキストが設定されていること
-- アイコンやボタンには、その機能を説明する代替テキストが設定されていること
-- 複雑な図表やグラフには、詳細な説明が提供されていること
-- 非テキストコンテンツがインタラクティブな要素として使用されている場合、その目的が明確に説明されていること
-- プラットフォーム固有のアクセシビリティ属性（alt属性、アクセシビリティラベル、アクセシビリティAPIなど）が適切に設定されていること
+### 必ず対応（高優先度）
 
-## ヒント
+<Aside type="caution" title="必須チェック項目">
+- [ ] **すべての画像**に`alt`属性が設定されている
+- [ ] **アイコンボタン**に`aria-label`が設定されている
+- [ ] **装飾画像**は`alt=""`になっている
+</Aside>
 
-- 代替テキストは、コンテンツの内容を簡潔に説明する必要がありますが、その目的や文脈も考慮する必要があります
-- 装飾的な要素と意味のある要素を区別する基準は、その要素が情報を伝えているかどうかです
-- 複雑な図表やグラフの場合、代替テキストだけでなく、詳細な説明を別途提供することを検討してください
-- アイコンの代替テキストは、そのアイコンの機能や目的を説明する必要があります
-- プラットフォームごとのアクセシビリティガイドラインを参照し、適切な代替テキストの提供方法を確認してください
+<Aside type="note" title="推奨項目（中優先度）">
+- [ ] **複雑な図表**に詳細な説明がある
+- [ ] **代替テキスト**が簡潔で分かりやすい
+- [ ] **文脈を考慮**した説明になっている
+</Aside>
 
-## チェック方法
+### 関連項目（別ガイドライン対象）
 
-- スクリーンリーダーを使用して、代替テキストが適切に読み上げられるか確認する
-- 非テキストコンテンツを非表示にして、代替テキストが表示されるか確認する
-- コードレビューで、適切な代替テキストが設定されているか確認する
-- プラットフォーム固有のアクセシビリティツール（開発者ツール、インスペクター、APIテストツールなど）を使用して、代替テキストの設定を確認する
+- [ ] **動画**に字幕や音声解説がある
+- [ ] **音声コンテンツ**に文字起こしがある
 
-## 補足・注意点
+## 知っておくと便利なこと
 
-- 代替テキストは「画像」や「アイコン」という言葉で始める必要はありません（スクリーンリーダーは既にその要素の種類を伝えます）
-- 長すぎる代替テキストは避け、簡潔で分かりやすい説明を心がけてください
-- インタラクティブな要素として使用されている場合、代替テキストはその要素の目的を説明する必要があります
-- プラットフォームごとに適切な代替テキストの提供方法が異なるため、各プラットフォームのガイドラインを参照してください
-- 自動生成された代替テキストは、人間が確認して適切性を検証する必要があります 
+### プラットフォーム別の実装方法
+
+| プラットフォーム | 実装方法 | 例 |
+|--------------|---------|-----|
+| HTML | `alt`属性、`aria-label` | `<img alt="説明">` |
+| iOS | `accessibilityLabel` | `image.accessibilityLabel = "説明"` |
+| Android | `contentDescription` | `android:contentDescription="説明"` |
+| React Native | `accessibilityLabel` | `accessibilityLabel="説明"` |
+
+<Aside type="tip" title="AIを活用した代替テキスト生成">
+最近のAIツールは画像の内容を説明できますが、必ず人間が確認・修正しましょう。
+
+- 文脈に合っているか
+- 重要な情報が含まれているか
+- 簡潔で分かりやすいか
+</Aside>
+
+### 参考資料
+
+#### WCAGガイドライン
+- [WCAG 2.2 達成基準 1.1.1 非テキストコンテンツ](https://www.w3.org/WAI/WCAG22/Understanding/non-text-content) - 英語公式ガイド
+- [解説書 達成基準 1.1.1: 非テキストコンテンツ | WAI | W3C](https://waic.jp/translations/WCAG22/Understanding/non-text-content) - 日本語版
+
+#### 技術的リソース
+- [MDN: img要素](https://developer.mozilla.org/ja/docs/Web/HTML/Element/img) - HTML img要素の詳細
+- [MDN: aria-label](https://developer.mozilla.org/ja/docs/Web/Accessibility/ARIA/Attributes/aria-label) - ARIA属性の解説
+- [代替テキスト決定木](https://www.w3.org/WAI/tutorials/images/decision-tree/) - W3C公式の判断フローチャート
+
+#### 各プラットフォームガイド
+- [iOS Accessibility](https://developer.apple.com/accessibility/ios/) - iOSアクセシビリティガイド
+- [Android Accessibility](https://developer.android.com/guide/topics/ui/accessibility) - Androidアクセシビリティガイド
+- [React Accessibility](https://reactjs.org/docs/accessibility.html) - Reactアクセシビリティドキュメント

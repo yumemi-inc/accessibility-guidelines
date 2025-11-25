@@ -1,50 +1,409 @@
 ---
 title: '色以外の情報伝達手段の確保'
+description: '色覚特性の違いに関わらず情報を伝えるための実装方法'
+sidebar:
+  badge:
+    text: WIP
+    variant: caution
 ---
 
-## 目的
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import dedent from 'dedent';
+import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
-色覚特性の違いや、モノクロ表示などの環境においても、情報の伝達や操作の実行が可能であることを保証するためです。色のみに依存した情報提供は、色覚特性の違いや環境によって情報が伝わらない可能性もあるため、色以外の手段でも情報を伝える必要があります。
+<Aside type="tip" title="このガイドラインで目指すこと">
+色覚特性の違いや、モノクロ表示などの環境においても、情報の伝達や操作の実行が可能であることを保証します。
 
-## 該当するケース
+- 色のみに依存した情報提供を避ける
+- 色以外の手段（テキスト、アイコン、パターンなど）でも情報を伝える
+</Aside>
 
-- フォームの必須項目を赤色のみで示している場合
-- エラーメッセージを赤色のみで表示している場合
-- グラフやチャートで色のみで情報を区別している場合
-- リンクテキストを色のみで示している場合
-- ステータスや状態を色のみで示している場合（例：緑=成功、赤=失敗）
+## このガイドラインが達成されないとどうなるか
 
-## 関連するWCAG達成基準
+<Aside type="caution">
+色のみで情報を伝えると、色覚特性の違いを持つユーザーや、モノクロ表示の環境では情報が伝わりません。
+</Aside>
 
-- [WCAG2.2 達成基準1.4.1 色の使用](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color) ([日本語版](https://waic.jp/translations/WCAG21/Understanding/use-of-color))
+結果的に、必要な情報を得られず、誤操作や混乱の原因になります。
+
+<Card title="具体例：フォーム入力での困りごと" icon="information">
+Cさんは色覚特性があり、赤と緑の区別が困難です。
+フォームの必須項目が赤色のアスタリスクのみで示されているため、どの項目が必須なのか分かりません。
+送信後にエラーが出ても、エラー箇所が赤枠で示されているだけでは、どこを修正すべきか判断できませんでした。
+</Card>
+
+<Aside type="danger" title="こんなとき、達成されていないかもしれません">
+- 必須項目を赤色のみで示している
+- エラーメッセージを赤色のみで表示している
+- グラフやチャートで色のみで情報を区別している
+- リンクテキストを色のみで識別させている（下線なし）
+- ステータスを色のみで示している（緑=成功、赤=失敗など）
+</Aside>
+
+## 実装例での比較
+
+以下のデモで色のみの情報伝達と、色以外の手段を併用した場合の違いを確認してください。
+
+<Card title="悪い例: 色のみで情報を伝えている" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <form>
+      <div class="form-group">
+        <label>名前 <span class="required-bad">*</span></label>
+        <input type="text" />
+      </div>
+      <div class="form-group error-bad">
+        <label>メールアドレス <span class="required-bad">*</span></label>
+        <input type="email" value="invalid" />
+      </div>
+      <div class="status-bad">
+        <span class="success">●</span> 完了
+        <span class="error">●</span> エラー
+        <span class="pending">●</span> 処理中
+      </div>
+    </form>
+  `}
+  css={dedent`
+    .form-group {
+      margin: 12px 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 200px;
+    }
+
+    /* 色のみで必須を示す */
+    .required-bad {
+      color: red;
+    }
+
+    /* 色のみでエラーを示す */
+    .error-bad input {
+      border-color: red;
+    }
+
+    /* 色のみでステータスを示す */
+    .status-bad {
+      margin-top: 16px;
+    }
+
+    .status-bad .success { color: green; }
+    .status-bad .error { color: red; }
+    .status-bad .pending { color: orange; }
+  `}
+  client:load
+/>
+
+</Card>
+
+<Card title="良い例: 色以外の手段も併用している" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <form>
+      <div class="form-group">
+        <label>名前 <span class="required-good">*（必須）</span></label>
+        <input type="text" />
+      </div>
+      <div class="form-group error-good">
+        <label>メールアドレス <span class="required-good">*（必須）</span></label>
+        <input type="email" value="invalid" aria-invalid="true" aria-describedby="email-error" />
+        <span id="email-error" class="error-message">⚠ 有効なメールアドレスを入力してください</span>
+      </div>
+      <div class="status-good">
+        <span class="success">✓ 完了</span>
+        <span class="error">✕ エラー</span>
+        <span class="pending">◐ 処理中</span>
+      </div>
+    </form>
+  `}
+  css={dedent`
+    .form-group {
+      margin: 12px 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 200px;
+    }
+
+    /* 色とテキストで必須を示す */
+    .required-good {
+      color: #c00;
+      font-size: 0.9em;
+    }
+
+    /* 色、アイコン、テキストでエラーを示す */
+    .error-good input {
+      border: 2px solid #c00;
+    }
+
+    .error-message {
+      display: block;
+      color: #c00;
+      font-size: 0.85em;
+      margin-top: 4px;
+    }
+
+    /* 色とアイコンでステータスを示す */
+    .status-good {
+      margin-top: 16px;
+      display: flex;
+      gap: 16px;
+    }
+
+    .status-good .success { color: green; }
+    .status-good .error { color: #c00; }
+    .status-good .pending { color: #b86e00; }
+  `}
+  client:load
+/>
+
+</Card>
+
+## 最低限、すぐに取り組めること
+
+### 要件定義
+
+- 機能要件に「色のみに依存しない情報伝達」を明記する
+- ステータス表示やエラー表示の仕様に、色以外の表現方法を含める
+
+### デザイン
+
+- 必須項目には「*（必須）」などのテキストを併記する
+- エラー状態にはアイコンとテキストを併用する
+- グラフやチャートには凡例やラベルを付ける
+- リンクには下線を付けるか、アイコンを併用する
+
+<Card title="ステータス表示の良い例" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="status-list">
+      <div class="status success">
+        <span class="icon">✓</span>
+        <span class="label">完了</span>
+      </div>
+      <div class="status error">
+        <span class="icon">✕</span>
+        <span class="label">エラー</span>
+      </div>
+      <div class="status warning">
+        <span class="icon">!</span>
+        <span class="label">警告</span>
+      </div>
+      <div class="status info">
+        <span class="icon">i</span>
+        <span class="label">情報</span>
+      </div>
+    </div>
+  `}
+  css={dedent`
+    .status-list {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .status .icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .status.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    .status.success .icon {
+      background: #2e7d32;
+      color: white;
+    }
+
+    .status.error {
+      background: #ffebee;
+      color: #c62828;
+    }
+    .status.error .icon {
+      background: #c62828;
+      color: white;
+    }
+
+    .status.warning {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    .status.warning .icon {
+      background: #e65100;
+      color: white;
+    }
+
+    .status.info {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+    .status.info .icon {
+      background: #1565c0;
+      color: white;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+### 開発
+
+- フォームのバリデーションエラーにはテキストメッセージを表示する
+- `aria-invalid`属性とエラーメッセージを組み合わせる
+- リンクには`text-decoration: underline`を維持する
+
+### QA
+
+- グレースケール表示で情報が区別できるか確認する
+- 色覚シミュレーションツールで確認する
+- テキストやアイコンのみで情報が伝わるか確認する
+
+### リリース後
+
+- 色覚特性のあるユーザーからのフィードバックを収集する
+- 問題が見つかった箇所を改善する
+
+## よくある問題と解決方法
+
+### グラフやチャートで色のみで区別している
+
+<Aside type="danger">
+円グラフや棒グラフで色のみでデータを区別すると、色覚特性のあるユーザーは判別できません。
+</Aside>
+
+#### 解決方法
+
+- 直接ラベルを付ける
+- パターン（斜線、ドットなど）を併用する
+- 凡例に数値を含める
+
+```html title="グラフの改善例"
+<!-- 悪い例：色のみで区別 -->
+<div class="legend">
+  <span style="color: red">●</span> カテゴリA
+  <span style="color: green">●</span> カテゴリB
+</div>
+
+<!-- 良い例：パターンと数値を併用 -->
+<div class="legend">
+  <span style="background: repeating-linear-gradient(45deg, red, red 2px, white 2px, white 4px)">▨</span> カテゴリA (45%)
+  <span style="background: repeating-linear-gradient(90deg, green, green 2px, white 2px, white 4px)">▤</span> カテゴリB (55%)
+</div>
+```
+
+### リンクが色のみで識別される
+
+通常のテキストとリンクを色のみで区別していると、リンクを見逃す可能性があります。
+
+<LiveCodeExample
+  html={dedent`
+    <p class="bad-link">
+      詳細は<a href="#">こちら</a>をご覧ください。
+    </p>
+    <p class="good-link">
+      詳細は<a href="#">こちら</a>をご覧ください。
+    </p>
+  `}
+  css={dedent`
+    .bad-link a {
+      color: blue;
+      text-decoration: none; /* 下線なし - 悪い例 */
+    }
+
+    .good-link a {
+      color: blue;
+      text-decoration: underline; /* 下線あり - 良い例 */
+    }
+
+    .good-link a:hover {
+      text-decoration-thickness: 2px;
+    }
+  `}
+  client:load
+/>
 
 ## チェックリスト
 
-- 色のみで情報を伝えていないこと
-- 色で示された情報が、テキストやアイコン、パターン、形状などの他の手段でも伝えられていること
-- グラフやチャートで色を使用する場合、凡例やラベルで情報が補完されていること
-- フォームの必須項目が、色以外の手段（例：アスタリスク、テキスト）でも示されていること
-- エラーメッセージが、色以外の手段（例：アイコン、テキスト）でも示されていること
-- リンクテキストが、下線やアイコンなど色以外の手段でも識別できること
+<Aside type="caution" title="必須チェック項目">
+- [ ] 色のみで情報を伝えていない
+- [ ] 必須項目は色以外の手段（テキスト、アイコン）でも示されている
+- [ ] エラーメッセージは色以外の手段でも識別できる
+- [ ] リンクは下線やアイコンで識別できる
+</Aside>
 
-## ヒント
+<Aside type="note" title="推奨項目（中優先度）">
+- [ ] グラフやチャートにはパターンやラベルが併用されている
+- [ ] ステータス表示にはアイコンとテキストが併用されている
+- [ ] グレースケール表示で情報が区別できる
+</Aside>
 
-- 色の違いをモノクロで表示したときに、情報が区別できるか確認しましょう
-- 色覚シミュレーションツールを使用して、色覚特性の違いによる影響を確認しましょう
-- 情報の重要度や優先度を考慮し、適切な補完手段を選択しましょう
-- デザインの一貫性を保ちながら、色以外の手段を組み合わせましょう
+## 知っておくと便利なこと
 
-## チェック方法
+### 色覚特性の種類
 
-- ブラウザの開発者ツールを使用して、色を無効化した状態で確認する
-- モノクロ表示のシミュレーションツールを使用する
-- 色覚シミュレーションテストツールを使用する
-- スクリーンリーダーを使用して、色以外の情報が適切に伝わるか確認する
-- コードレビューで、色のみに依存した実装がないか確認する
+| 種類 | 特徴 | 注意が必要な色の組み合わせ |
+|-----|------|------------------------|
+| P型（1型）色覚 | 赤が見えにくい | 赤と緑、赤と茶色 |
+| D型（2型）色覚 | 緑が見えにくい | 赤と緑、緑と茶色 |
+| T型（3型）色覚 | 青が見えにくい | 青と黄色 |
 
-## 補足・注意点
+### グレースケールでの確認方法
 
-- 色の使用自体を禁止するものではなく、色に依存しない情報提供を推奨しています
-- 色のコントラスト比に関する要件は、達成基準1.4.3コントラスト（最低限）で規定されています
-- 色以外の手段を追加する際は、視覚的なノイズにならないよう注意しましょう
-- 色覚特性の違いは多様であり、特定の色の組み合わせを避けることが望ましいです
+```css title="CSSでグレースケール表示にする方法"
+/* 開発時の確認用 */
+body {
+  filter: grayscale(100%);
+}
+```
+
+### 色覚シミュレーションツール
+
+- Chrome DevTools：RenderingからEmulate vision deficienciesを選択
+- Firefox：Accessibility InspectorからSimulateを選択
+- Figma：Visionプラグイン
+
+## 参考資料
+
+### WCAGガイドライン
+- [WCAG 2.2 達成基準 1.4.1 色の使用](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color) - 英語公式ガイド
+- [解説書 達成基準 1.4.1: 色の使用 | WAI | W3C](https://waic.jp/translations/WCAG21/Understanding/use-of-color) - 日本語版
+
+### 技術的リソース
+- [MDN: 色のアクセシビリティ](https://developer.mozilla.org/ja/docs/Web/Accessibility/Understanding_WCAG/Perceivable/Color_contrast) - 色とアクセシビリティの解説
+- [WebAIM: 色覚特性のシミュレーション](https://webaim.org/articles/visual/colorblind) - 色覚特性の理解と対応

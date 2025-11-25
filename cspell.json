@@ -11,7 +11,8 @@
     "sandpack",
     "Kashey",
     "Chakra",
-    "azukiazusa"
+    "azukiazusa",
+    "Jetpack"
   ],
   "flagWords": [],
   "ignorePaths": ["node_modules", "dist", ".git", "pnpm-lock.yaml", ".astro"],

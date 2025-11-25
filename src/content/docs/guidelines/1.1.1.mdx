@@ -1,52 +1,335 @@
 ---
 title: '非テキストコンテンツには代替テキストを提供する'
+description: '画像やアイコンなどの非テキストコンテンツに適切な代替テキストを設定する方法'
+sidebar:
+  badge:
+    text: WIP
+    variant: caution
 ---
 
-## 目的
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import dedent from 'dedent';
+import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
-視覚的な情報に依存できないユーザー（スクリーンリーダー利用者など）が、画像やアイコンなどの非テキストコンテンツの内容や目的を理解できるようにするためです。これにより、すべてのユーザーが同等の情報へアクセスできるようになります。
+export const sampleImageUri = `data:image/svg+xml,`;
 
-## 該当するケース
+<Aside type="tip" title="このガイドラインで目指すこと">
+視覚的な情報に依存できないユーザー（スクリーンリーダー利用者など）が、画像やアイコンなどの非テキストコンテンツの内容や目的を理解できるようにします。
 
-- 画像（写真、イラスト、図表、グラフ、インフォグラフィックなど）
-- アイコン（メニュー、ツールバー、通知、ステータスインジケーターなど）
-- 装飾的な要素
-- インタラクティブな要素（ボタン、リンク、フォームコントロールなど）
-- メディアコンテンツ（動画サムネイル、プレーヤーコントロールなど）
-- ドキュメント内の視覚要素（フローチャート、組織図、テクニカルイラストレーションなど）
+- すべてのユーザーが同等の情報へアクセスできる
+- 視覚に依存しない形で情報を伝達できる
+</Aside>
 
-## 関連するWCAG達成基準
+## このガイドラインが達成されないとどうなるか
 
-- [WCAG2.2 達成基準1.1.1 非テキストコンテンツ](https://www.w3.org/WAI/WCAG22/Understanding/non-text-content) ([日本語版](https://waic.jp/translations/WCAG21/Understanding/non-text-content))
+<Aside type="caution">
+代替テキストがないと、スクリーンリーダーは画像のファイル名を読み上げたり、何も読み上げなかったりするため、ユーザーは重要な情報を得られません。
+</Aside>
+
+結果的に、視覚に依存できないユーザーは、ページの内容を正しく理解できず、誤った操作をしてしまう可能性があります。
+
+<Card title="具体例：ECサイトでの困りごと" icon="information">
+Bさんはスクリーンリーダーを使用してオンラインショッピングをしています。
+商品画像に代替テキストが設定されていないため、どのような商品なのか分かりません。
+「image_12345.jpg」と読み上げられても、商品の色やデザインが分からず、購入を諦めることになりました。
+</Card>
+
+<Aside type="danger" title="こんなとき、達成されていないかもしれません">
+- 画像に`alt`属性が設定されていない
+- `alt`属性が空ではなく、ファイル名がそのまま入っている（例：`alt="IMG_001.jpg"`）
+- アイコンボタンに代替テキストがなく、機能が分からない
+- 装飾的な画像に意味のある`alt`テキストが設定されている（逆のケース）
+- グラフや図表に詳細な説明がない
+</Aside>
+
+## 実装例での比較
+
+以下のデモでスクリーンリーダーでの読み上げの違いを確認してください。
+
+<Card title="悪い例: 代替テキストがない・不適切" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <p>代替テキストがない</p>
+    <img src="${sampleImageUri}" />
+
+    <p>ファイル名がそのまま入っている</p>
+    <img src="${sampleImageUri}" alt="IMG_user_profile_2024.jpg" />
+
+    <p>アイコンボタンに代替テキストがない</p>
+    <button>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 6h18M3 12h18M3 18h18"/>
+      </svg>
+    </button>
+  `}
+  css={dedent`
+    p {
+      margin: 16px 0 4px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    p:first-child {
+      margin-top: 0;
+    }
+
+    img {
+      width: 100px;
+      height: 100px;
+      display: block;
+    }
+
+    button {
+      padding: 8px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+<Card title="良い例: 適切な代替テキストが設定されている" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <p>意味のある代替テキスト</p>
+    <img src="${sampleImageUri}" alt="YUMEMIのロゴマーク" />
+
+    <p>適切なユーザープロファイル説明</p>
+    <img src="${sampleImageUri}" alt="田中太郎のプロフィール写真" />
+
+    <p>アイコンボタンに代替テキストがある</p>
+    <button aria-label="メニューを開く">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18"/>
+      </svg>
+    </button>
+  `}
+  css={dedent`
+    p {
+      margin: 16px 0 4px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    p:first-child {
+      margin-top: 0;
+    }
+
+    img {
+      width: 100px;
+      height: 100px;
+      display: block;
+    }
+
+    button {
+      padding: 8px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+## 最低限、すぐに取り組めること
+
+### 要件定義
+
+- 機能要件に「すべての非テキストコンテンツに適切な代替テキストを提供する」を明記する
+- 画像を使用する機能では、代替テキストの入力フィールドを必須とする
+
+### デザイン
+
+- 画像やアイコンの目的を明確にし、代替テキストの指示をデザインドキュメントに記載する
+- 装飾的な要素と意味のある要素を区別してデザインする
+
+### 開発
+
+- `img`要素には必ず`alt`属性を設定する
+- 装飾的な画像には`alt=""`（空のalt）を設定する
+- アイコンボタンには`aria-label`または`aria-labelledby`を設定する
+- SVGアイコンには`aria-hidden="true"`を設定し、親要素にラベルを付ける
+
+<Card title="基本的な実装例" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <p>意味のある画像</p>
+    <img src="${sampleImageUri}" alt="YUMEMIのロゴマーク" />
+
+    <p>装飾的な画像</p>
+    <img src="${sampleImageUri}" alt="" />
+
+    <p>テキストと併用するアイコン</p>
+    <button>
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+      </svg>
+      追加する
+    </button>
+  `}
+  css={dedent`
+    p {
+      margin: 16px 0 4px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    p:first-child {
+      margin-top: 0;
+    }
+
+    img {
+      width: 100px;
+      height: 100px;
+      display: block;
+    }
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+### QA
+
+- スクリーンリーダーで画像やアイコンの読み上げを確認する
+- `alt`属性が設定されていない画像がないかチェックする
+- 代替テキストが画像の内容を適切に説明しているか確認する
+
+### リリース後
+
+- ユーザーからのフィードバックを収集し、代替テキストの改善に活かす
+- 新しいコンテンツを追加する際は、代替テキストの設定を忘れないようにする
+
+## よくある問題と解決方法
+
+### 「画像」や「アイコン」で始まる代替テキスト
+
+<Aside type="danger">
+スクリーンリーダーは既に「画像」であることを伝えるため、代替テキストを「画像：」で始める必要はありません。
+</Aside>
+
+```html title="悪い例"
+<img src="product.jpg" alt="画像：赤いセーター" />
+```
+
+```html title="良い例"
+<img src="product.jpg" alt="赤いニットセーター Mサイズ" />
+```
+
+### 複雑な図表やグラフの説明
+
+複雑な図表には、短い`alt`属性に加えて、詳細な説明を別途提供します。
+
+```html title="詳細な説明を提供する方法"
+<figure>
+  <img src="sales-chart.png" alt="2024年月別売上グラフ" aria-describedby="chart-desc" />
+  <figcaption id="chart-desc">
+    1月から12月までの売上推移。1月は100万円からスタートし、
+    6月に最高値の500万円を記録。年間平均は300万円。
+  </figcaption>
+</figure>
+```
+
+### 背景画像に意味がある場合
+
+CSSの背景画像には`alt`属性を設定できないため、代替手段を使用します。
+
+```html title="背景画像に代替テキストを提供する方法"
+<div
+  role="img"
+  aria-label="夕焼けの海岸線"
+  style="background-image: url('sunset.jpg');">
+</div>
+```
+
+### リンク画像の代替テキスト
+
+リンク内の画像は、リンク先を説明する代替テキストを設定します。
+
+```html title="リンク画像の適切な代替テキスト"
+<a href="/products/sweater">
+  <img src="sweater.jpg" alt="赤いニットセーター 商品詳細ページへ" />
+</a>
+```
 
 ## チェックリスト
 
-- すべての非テキストコンテンツに適切な代替テキストが提供されていること
-- 装飾的な要素には空の代替テキストが設定されていること
-- アイコンやボタンには、その機能を説明する代替テキストが設定されていること
-- 複雑な図表やグラフには、詳細な説明が提供されていること
-- 非テキストコンテンツがインタラクティブな要素として使用されている場合、その目的が明確に説明されていること
-- プラットフォーム固有のアクセシビリティ属性（alt属性、アクセシビリティラベル、アクセシビリティAPIなど）が適切に設定されていること
+<Aside type="caution" title="必須チェック項目">
+- [ ] すべての`img`要素に`alt`属性が設定されている
+- [ ] 代替テキストが画像の内容や目的を適切に説明している
+- [ ] 装飾的な画像には`alt=""`が設定されている
+- [ ] アイコンボタンには代替テキスト（`aria-label`など）が設定されている
+</Aside>
 
-## ヒント
+<Aside type="note" title="推奨項目（中優先度）">
+- [ ] 複雑な図表には詳細な説明が提供されている
+- [ ] 代替テキストが「画像」「アイコン」で始まっていない
+- [ ] リンク画像の代替テキストがリンク先を説明している
+</Aside>
 
-- 代替テキストは、コンテンツの内容を簡潔に説明する必要がありますが、その目的や文脈も考慮する必要があります
-- 装飾的な要素と意味のある要素を区別する基準は、その要素が情報を伝えているかどうかです
-- 複雑な図表やグラフの場合、代替テキストだけでなく、詳細な説明を別途提供することを検討してください
-- アイコンの代替テキストは、そのアイコンの機能や目的を説明する必要があります
-- プラットフォームごとのアクセシビリティガイドラインを参照し、適切な代替テキストの提供方法を確認してください
+## 知っておくと便利なこと
 
-## チェック方法
+### 代替テキストの種類と使い分け
 
-- スクリーンリーダーを使用して、代替テキストが適切に読み上げられるか確認する
-- 非テキストコンテンツを非表示にして、代替テキストが表示されるか確認する
-- コードレビューで、適切な代替テキストが設定されているか確認する
-- プラットフォーム固有のアクセシビリティツール（開発者ツール、インスペクター、APIテストツールなど）を使用して、代替テキストの設定を確認する
+| 画像の種類 | 代替テキストの設定方法 | 例 |
+|-----------|---------------------|---|
+| 情報を伝える画像 | 内容を説明する`alt`属性 | `alt="売上グラフ：1月100万、2月150万"` |
+| 装飾的な画像 | 空の`alt`属性 | `alt=""` |
+| 機能を持つ画像（ボタンなど） | 機能を説明する`alt`または`aria-label` | `aria-label="検索"` |
+| 複雑な画像 | 短い`alt` + 詳細な説明 | `alt="組織図" aria-describedby="org-desc"` |
 
-## 補足・注意点
+### プラットフォーム別の実装方法
 
-- 代替テキストは「画像」や「アイコン」という言葉で始める必要はありません（スクリーンリーダーは既にその要素の種類を伝えます）
-- 長すぎる代替テキストは避け、簡潔で分かりやすい説明を心がけてください
-- インタラクティブな要素として使用されている場合、代替テキストはその要素の目的を説明する必要があります
-- プラットフォームごとに適切な代替テキストの提供方法が異なるため、各プラットフォームのガイドラインを参照してください
-- 自動生成された代替テキストは、人間が確認して適切性を検証する必要があります 
+#### Web（HTML）
+```html
+<img src="image.jpg" alt="説明文" />
+```
+
+#### iOS（SwiftUI）
+```swift
+Image("product")
+  .accessibilityLabel("赤いニットセーター")
+```
+
+#### Android（Jetpack Compose）
+```kotlin
+Image(
+  painter = painterResource(id = R.drawable.product),
+  contentDescription = "赤いニットセーター"
+)
+```
+
+## 参考資料
+
+### WCAGガイドライン
+- [WCAG 2.2 達成基準 1.1.1 非テキストコンテンツ](https://www.w3.org/WAI/WCAG22/Understanding/non-text-content) - 英語公式ガイド
+- [解説書 達成基準 1.1.1: 非テキストコンテンツ | WAI | W3C](https://waic.jp/translations/WCAG21/Understanding/non-text-content) - 日本語版
+
+### 技術的リソース
+- [MDN: img要素](https://developer.mozilla.org/ja/docs/Web/HTML/Element/img) - HTML img要素の詳細解説
+- [MDN: aria-label](https://developer.mozilla.org/ja/docs/Web/Accessibility/ARIA/Attributes/aria-label) - aria-label属性の使い方
+- [WAI: 画像チュートリアル](https://www.w3.org/WAI/tutorials/images/) - W3C公式の画像アクセシビリティチュートリアル

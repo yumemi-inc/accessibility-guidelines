@@ -1,48 +1,475 @@
 ---
 title: 'コンテンツの目的を明確に伝える見出しとラベル'
+description: 'ユーザーが情報を効率的に理解できる見出しとラベルの実装方法'
+sidebar:
+  badge:
+    text: WIP
+    variant: caution
 ---
 
-## 目的
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import dedent from 'dedent';
+import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
-見出しとラベルがコンテンツの目的を明確に伝えることで、ユーザーが情報を効率的に理解し、必要な情報へ素早くアクセスできるようにします。特に、スクリーンリーダーを使用するユーザーや、認知的な負荷を軽減したいユーザーにとって重要な配慮となります。
+<Aside type="tip" title="このガイドラインで目指すこと">
+見出しとラベルがコンテンツの目的を明確に伝えることで、ユーザーが情報を効率的に理解し、必要な情報へ素早くアクセスできるようにします。
 
-## 該当するケース
+- スクリーンリーダーユーザーがページ構造を把握できる
+- 認知的な負荷を軽減し、必要な情報を素早く見つけられる
+</Aside>
 
-- ウェブページの見出し（h1〜h6要素）
-- フォームの入力フィールドのラベル
-- ボタンやリンクのテキスト
-- セクションやコンテンツブロックの見出し
-- データテーブルの見出しセル
-- メニュー項目やナビゲーション要素のラベル
+## このガイドラインが達成されないとどうなるか
 
-## 関連するWCAG達成基準
+<Aside type="caution">
+見出しやラベルが不明確だと、ユーザーはコンテンツの内容を理解するのに時間がかかり、必要な情報を見つけられない可能性があります。
+</Aside>
 
-- [WCAG2.2 達成基準2.4.6 見出し及びラベル](https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels) ([日本語版](https://waic.jp/translations/WCAG21/Understanding/headings-and-labels))
+結果的に、特にスクリーンリーダーを使用するユーザーは、ページ全体を読まなければ内容を把握できず、非常に非効率になります。
+
+<Card title="具体例：設定画面での困りごと" icon="information">
+Fさんはスクリーンリーダーを使用しています。
+あるアプリの設定画面で、「設定1」「設定2」「設定3」という見出しが使われていました。
+各設定が何を意味するのか分からず、すべてのセクションを読み上げて確認する必要がありました。
+</Card>
+
+<Aside type="danger" title="こんなとき、達成されていないかもしれません">
+- 見出しが「セクション1」「項目A」など、内容を説明していない
+- フォームのラベルが「入力欄」「テキスト」など曖昧
+- ボタンが「こちら」「クリック」など目的が不明
+- 見出しの階層構造が論理的でない（h1の次にh4があるなど）
+- 同じページに同じ見出しが複数ある
+</Aside>
+
+## 実装例での比較
+
+以下のデモで見出しとラベルの違いを確認してください。
+
+<Card title="悪い例: 見出しとラベルが不明確" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <article>
+      <h1>お知らせ</h1>
+      <section>
+        <h3>項目1</h3>
+        <p>内容がここに入ります。</p>
+      </section>
+      <section>
+        <h3>項目2</h3>
+        <p>別の内容がここに入ります。</p>
+      </section>
+
+      <form>
+        <div class="field">
+          <label>入力欄</label>
+          <input type="text" />
+        </div>
+        <div class="field">
+          <label>入力欄</label>
+          <input type="email" />
+        </div>
+        <button>送信</button>
+      </form>
+    </article>
+  `}
+  css={dedent`
+    article {
+      max-width: 400px;
+    }
+
+    section {
+      margin: 16px 0;
+      padding: 12px;
+      background: #f5f5f5;
+      border-radius: 4px;
+    }
+
+    h1 { font-size: 24px; margin: 0 0 16px 0; }
+    h3 { font-size: 16px; margin: 0 0 8px 0; }
+    p { margin: 0; font-size: 14px; color: #666; }
+
+    form {
+      margin-top: 24px;
+      padding: 16px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 8px 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+<Card title="良い例: 見出しとラベルが明確" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <article>
+      <h1>2024年11月のお知らせ</h1>
+      <section>
+        <h2>システムメンテナンスのお知らせ</h2>
+        <p>11月15日 午前2時から4時までメンテナンスを行います。</p>
+      </section>
+      <section>
+        <h2>新機能リリースのお知らせ</h2>
+        <p>ダークモードが利用可能になりました。</p>
+      </section>
+
+      <form aria-labelledby="form-title">
+        <h2 id="form-title">お問い合わせフォーム</h2>
+        <div class="field">
+          <label for="name">お名前（必須）</label>
+          <input type="text" id="name" required />
+        </div>
+        <div class="field">
+          <label for="email">メールアドレス（必須）</label>
+          <input type="email" id="email" required />
+        </div>
+        <button type="submit">お問い合わせを送信</button>
+      </form>
+    </article>
+  `}
+  css={dedent`
+    article {
+      max-width: 400px;
+    }
+
+    section {
+      margin: 16px 0;
+      padding: 12px;
+      background: #f5f5f5;
+      border-radius: 4px;
+    }
+
+    h1 { font-size: 24px; margin: 0 0 16px 0; }
+    h2 { font-size: 18px; margin: 0 0 8px 0; }
+    p { margin: 0; font-size: 14px; color: #666; }
+
+    form {
+      margin-top: 24px;
+      padding: 16px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 8px 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+## 最低限、すぐに取り組めること
+
+### 要件定義
+
+- 見出しとラベルのガイドラインを定義する
+- 見出しはコンテンツの内容を説明する具体的な文言にする
+
+### デザイン
+
+- 見出しの階層構造を視覚的に設計する
+- フォームのラベルは入力内容を明確に示す
+- ボタンは動作を説明するラベルにする
+
+<Card title="良い見出し・ラベルの例" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="examples">
+      <div class="example">
+        <h3>見出しの例</h3>
+        <ul>
+          <li><strong>良い:</strong> 「2024年の売上レポート」</li>
+          <li><strong>悪い:</strong> 「レポート」</li>
+        </ul>
+      </div>
+      <div class="example">
+        <h3>フォームラベルの例</h3>
+        <ul>
+          <li><strong>良い:</strong> 「メールアドレス」</li>
+          <li><strong>悪い:</strong> 「入力欄1」</li>
+        </ul>
+      </div>
+      <div class="example">
+        <h3>ボタンの例</h3>
+        <ul>
+          <li><strong>良い:</strong> 「注文を確定する」</li>
+          <li><strong>悪い:</strong> 「OK」「送信」</li>
+        </ul>
+      </div>
+    </div>
+  `}
+  css={dedent`
+    .examples {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .example {
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .example h3 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .example ul {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 14px;
+    }
+
+    .example li {
+      margin: 4px 0;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+### 開発
+
+- 見出しは論理的な階層構造（h1→h2→h3）を維持する
+- フォームの`label`要素と`input`を`for`属性で関連付ける
+- ボタンには動作を説明するテキストを含める
+
+```html title="適切な見出し構造の例"
+<h1>商品カタログ</h1>
+  <h2>電化製品</h2>
+    <h3>テレビ</h3>
+    <h3>オーディオ</h3>
+  <h2>家具</h2>
+    <h3>ソファ</h3>
+    <h3>テーブル</h3>
+```
+
+### QA
+
+- スクリーンリーダーで見出しの一覧を確認する
+- 見出しだけでページの内容が理解できるか確認する
+- フォームのラベルが入力内容を適切に説明しているか確認する
+
+### リリース後
+
+- ユーザーからのフィードバックを収集する
+- 分かりにくい見出しやラベルを改善する
+
+## よくある問題と解決方法
+
+### 見出しの階層構造が崩れている
+
+<Aside type="danger">
+見出しレベルをスキップすると、スクリーンリーダーユーザーは構造を理解しにくくなります。
+</Aside>
+
+```html title="悪い例：見出しレベルのスキップ"
+<h1>ページタイトル</h1>
+<h4>セクション1</h4> <!-- h2, h3をスキップ -->
+<h2>セクション2</h2>
+```
+
+```html title="良い例：論理的な階層構造"
+<h1>ページタイトル</h1>
+<h2>セクション1</h2>
+<h3>サブセクション1-1</h3>
+<h2>セクション2</h2>
+```
+
+### 「こちら」「クリック」などの曖昧なリンク
+
+リンクテキストは、リンク先の内容が分かるようにする必要があります。
+
+```html title="悪い例"
+<p>詳細は<a href="/guide">こちら</a>をご覧ください。</p>
+```
+
+```html title="良い例"
+<p><a href="/guide">利用ガイド</a>をご覧ください。</p>
+<!-- または -->
+<p>詳細は<a href="/guide">利用ガイドのページ</a>をご覧ください。</p>
+```
+
+### 同じラベルが複数ある
+
+同じページに同じラベルのボタンが複数あると、どれを押すべきか分かりません。
+
+<LiveCodeExample
+  html={dedent`
+    <div class="cart-demo">
+      <h3>悪い例</h3>
+      <div class="cart-item">
+        <span>商品A</span>
+        <button>削除</button>
+      </div>
+      <div class="cart-item">
+        <span>商品B</span>
+        <button>削除</button>
+      </div>
+
+      <h3>良い例</h3>
+      <div class="cart-item">
+        <span>商品A</span>
+        <button aria-label="商品Aを削除">削除</button>
+      </div>
+      <div class="cart-item">
+        <span>商品B</span>
+        <button aria-label="商品Bを削除">削除</button>
+      </div>
+    </div>
+  `}
+  css={dedent`
+    .cart-demo h3 {
+      margin: 16px 0 8px 0;
+      font-size: 14px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #f5f5f5;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .cart-item button {
+      padding: 4px 12px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+  `}
+  client:load
+/>
 
 ## チェックリスト
 
-- 各見出しは、その後に続くコンテンツの内容を正確に反映していること
-- フォームのラベルは、入力が期待される情報の種類を明確に示していること
-- ボタンやリンクのテキストは、その機能や遷移先を理解できる内容になっていること
-- 見出しの階層構造は論理的で、コンテンツの関係性を正しく表現していること
-- 同じレベルの見出しは、同じような種類の情報を表していること
-- ラベルや見出しは、コンテキストを考慮しても曖昧さがないこと
+<Aside type="caution" title="必須チェック項目">
+- [ ] 見出しがコンテンツの内容を正確に説明している
+- [ ] 見出しの階層構造が論理的である（h1→h2→h3の順）
+- [ ] フォームのラベルが入力内容を明確に示している
+- [ ] ボタンやリンクのテキストが目的を説明している
+</Aside>
 
-## ヒント
+<Aside type="note" title="推奨項目（中優先度）">
+- [ ] 見出しだけでページの概要が理解できる
+- [ ] 同じページに同じ見出しが重複していない
+- [ ] 「こちら」「クリック」などの曖昧なリンクテキストがない
+</Aside>
 
-- 見出しやラベルを評価する際は、その要素が単独で存在する場合と、周囲のコンテンツと組み合わさった場合の両方の視点で確認してください
-- 技術的な実装方法（HTMLの見出し要素やラベル要素の使用）だけでなく、実際のテキスト内容が適切かどうかも確認してください
-- 見出しやラベルの目的は、ユーザーがコンテンツを効率的にスキャンできるようにすることです。この観点から評価してください
+## 知っておくと便利なこと
 
-## チェック方法
+### スクリーンリーダーでの見出しナビゲーション
 
-- スクリーンリーダーを使用して、見出しとラベルの読み上げを確認する
-- 見出しの階層構造を視覚的に確認する
-- コードレビューで適切なHTML要素が使用されているか確認する
-- ユーザビリティテストで、見出しやラベルが意図した通りに理解されているか確認する
+スクリーンリーダーは見出しの一覧を表示する機能があります。ユーザーは見出し間をジャンプしてページを素早く把握できます。
 
-## 補足・注意点
+| キー | 動作（NVDA/JAWS） |
+|-----|------------------|
+| H | 次の見出しへ移動 |
+| Shift + H | 前の見出しへ移動 |
+| 1〜6 | 指定レベルの見出しへ移動 |
 
-- 見出しやラベルは、コンテンツの構造を反映するだけでなく、ユーザーが期待する情報を提供する必要があります
-- 技術的な実装が正しくても、テキスト内容が不適切な場合は達成基準を満たしていないことになります
-- 見出しの階層構造は、必ずしも視覚的な見た目と一致する必要はありませんが、論理的な順序を維持する必要があります 
+### aria-label と aria-labelledby
+
+視覚的なラベルを変更せずに、スクリーンリーダー向けに説明を追加できます。
+
+```html title="aria-labelの使用例"
+<!-- アイコンのみのボタン -->
+<button aria-label="メニューを開く">
+  <svg>...</svg>
+</button>
+
+<!-- 複数の同名ボタンを区別 -->
+<button aria-label="商品Aを削除">削除</button>
+<button aria-label="商品Bを削除">削除</button>
+```
+
+```html title="aria-labelledbyの使用例"
+<section aria-labelledby="section-title">
+  <h2 id="section-title">お知らせ</h2>
+  <p>内容...</p>
+</section>
+```
+
+### 見出しレベルの選び方
+
+| 見出しレベル | 用途 |
+|------------|------|
+| h1 | ページのメインタイトル（通常1つ） |
+| h2 | 主要なセクション |
+| h3 | h2内のサブセクション |
+| h4〜h6 | さらに細かい階層 |
+
+## 参考資料
+
+### WCAGガイドライン
+- [WCAG 2.2 達成基準 2.4.6 見出し及びラベル](https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels) - 英語公式ガイド
+- [解説書 達成基準 2.4.6: 見出し及びラベル | WAI | W3C](https://waic.jp/translations/WCAG21/Understanding/headings-and-labels) - 日本語版
+
+### 技術的リソース
+- [MDN: 見出し要素](https://developer.mozilla.org/ja/docs/Web/HTML/Element/Heading_Elements) - HTML見出し要素の解説
+- [MDN: label要素](https://developer.mozilla.org/ja/docs/Web/HTML/Element/label) - フォームラベルの使い方
+- [WAI: ページ構造チュートリアル](https://www.w3.org/WAI/tutorials/page-structure/) - W3C公式のページ構造ガイド

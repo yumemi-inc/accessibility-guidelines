@@ -1,57 +1,350 @@
 ---
 title: '危険な画面の点滅・閃光を防止する'
+description: '光感受性発作を防ぐための閃光・点滅の制限方法'
+sidebar:
+  badge:
+    text: WIP
+    variant: caution
 ---
 
-## 目的
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import dedent from 'dedent';
+import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
-光感受性発作を引き起こす可能性のある閃光を避けることで、光感受性発作を持つユーザーが安全にコンテンツを利用できるようにします。特に、てんかんや光感受性発作の既往歴を持つユーザーを保護することを目的としています。
+<Aside type="tip" title="このガイドラインで目指すこと">
+光感受性発作を引き起こす可能性のある閃光を避けることで、てんかんや光感受性発作の既往歴を持つユーザーが安全にコンテンツを利用できるようにします。
 
-## 該当するケース
+- 健康上のリスクを回避する
+- すべてのユーザーが安心してコンテンツを閲覧できる
+</Aside>
 
-- アニメーションや動画コンテンツ
-- インタラクティブな要素の視覚的フィードバック
-- 広告やバナー
-- スライドショーやカルーセル
-- ゲームのエフェクトや演出
-- ローディングアニメーション
-- 背景や壁紙の動的な変化
+## このガイドラインが達成されないとどうなるか
 
-## 関連するWCAG達成基準
+<Aside type="caution">
+激しい点滅や閃光は、光感受性発作（てんかん発作の一種）を引き起こす可能性があります。これは生命に関わる深刻な問題です。
+</Aside>
 
-- [WCAG2.2 達成基準2.3.1 3回の閃光、又は閾値以下](https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold) ([日本語版](https://waic.jp/translations/WCAG21/Understanding/three-flashes-or-below-threshold))
+結果的に、一部のユーザーが健康被害を受けるリスクがあり、また発作を恐れてサービスの利用を避けることになります。
+
+<Card title="具体例：動画コンテンツでの問題" icon="information">
+Eさんは光感受性てんかんの既往歴があります。
+あるウェブサイトで自動再生される動画に激しいストロボ効果が含まれていました。
+警告なく再生されたため、発作を起こしかけて非常に危険な状況になりました。
+</Card>
+
+<Aside type="danger" title="こんなとき、達成されていないかもしれません">
+- 1秒間に3回以上点滅するアニメーションがある
+- ストロボ効果を使用した動画が自動再生される
+- 明るさが急激に変化するゲームのエフェクトがある
+- 赤色の激しい閃光を含むコンテンツがある
+- 画面の広い領域で点滅が発生している
+</Aside>
+
+## 閃光の基準
+
+以下の条件を**すべて**満たす場合、安全とみなされます。
+
+1. **頻度**: 1秒間に3回未満の閃光
+2. **領域**: 画面の25%未満の領域での閃光
+3. **明るさ**: 一般的な明るさの3倍未満の変化
+4. **色**: 赤色の飽和した閃光を避ける
+
+<Aside type="caution" title="赤色の閃光に注意">
+赤色の閃光は特に危険性が高いため、他の色よりも厳しい基準が適用されます。
+可能な限り赤色の点滅・閃光は避けてください。
+</Aside>
+
+## 最低限、すぐに取り組めること
+
+### 要件定義
+
+- 機能要件に「1秒間に3回以上の閃光を含まない」を明記する
+- 動画やアニメーションの閃光チェックをレビュープロセスに含める
+
+### デザイン
+
+- 激しい点滅を含むアニメーションを避ける
+- 必要な場合は、閃光の頻度を1秒間で3回未満に制限する
+- ストロボ効果や激しい色の変化を避ける
+
+<Card title="安全なアニメーションの例" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="animation-demo">
+      <div class="safe-pulse">
+        ゆっくりとした点滅（安全）
+      </div>
+      <div class="safe-fade">
+        フェードイン・アウト（安全）
+      </div>
+    </div>
+  `}
+  css={dedent`
+    .animation-demo {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .safe-pulse, .safe-fade {
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    /* 安全: 2秒周期のゆっくりとした点滅 */
+    .safe-pulse {
+      background: #007bff;
+      color: white;
+      animation: safe-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes safe-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* 安全: 3秒周期のフェード */
+    .safe-fade {
+      background: #28a745;
+      color: white;
+      animation: safe-fade 3s ease-in-out infinite;
+    }
+
+    @keyframes safe-fade {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+### 開発
+
+- CSSアニメーションの周期を確認し、1秒間に3回以上の点滅を避ける
+- 動画コンテンツは自動再生を避け、ユーザーが再生を制御できるようにする
+- `prefers-reduced-motion`メディアクエリを使用してアニメーションを制御する
+
+```css title="アニメーションを制御するCSS"
+/* 通常時のアニメーション */
+.animated-element {
+  animation: pulse 0.5s infinite;
+}
+
+/* モーション軽減を希望するユーザー向け */
+@media (prefers-reduced-motion: reduce) {
+  .animated-element {
+    animation: none;
+  }
+}
+```
+
+### QA
+
+- 目視で閃光の頻度を確認する
+- 画面録画を分析して閃光の頻度を測定する
+- 閃光検出ツールを使用して自動チェックする
+
+### リリース後
+
+- ユーザーからの報告を受け付ける仕組みを用意する
+- 閃光に関する問題が報告された場合は、速やかに対応する
+
+## よくある問題と解決方法
+
+### 動画コンテンツに閃光が含まれている
+
+<Aside type="danger">
+動画に閃光が含まれる場合は、必ず事前に警告を表示してください。
+</Aside>
+
+#### 解決方法
+
+1. 動画の前に警告を表示する
+2. 自動再生を無効にする
+3. 閃光シーンをカットまたは編集する
+
+```html title="警告表示の例"
+<div class="video-warning" role="alert">
+  <p>⚠ この動画には激しい光の点滅が含まれています。</p>
+  <p>光感受性発作の既往歴がある方はご注意ください。</p>
+  <button onclick="playVideo()">理解した上で再生する</button>
+</div>
+<video id="video" src="video.mp4" controls></video>
+```
+
+### ローディングアニメーションが激しい
+
+ローディングスピナーやプログレスバーで激しい点滅を使用している場合があります。
+
+<LiveCodeExample
+  html={dedent`
+    <div class="loading-demo">
+      <div class="safe-spinner" aria-label="読み込み中">
+        <div class="spinner"></div>
+        <span>安全なスピナー</span>
+      </div>
+      <div class="safe-dots" aria-label="読み込み中">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span>安全なドット</span>
+      </div>
+    </div>
+  `}
+  css={dedent`
+    .loading-demo {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    /* 安全: 回転するスピナー（点滅なし） */
+    .safe-spinner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #e0e0e0;
+      border-top-color: #007bff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 安全: ゆっくり変化するドット */
+    .safe-dots {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .safe-dots .dot {
+      width: 8px;
+      height: 8px;
+      background: #007bff;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 4px;
+      animation: dot-fade 1.5s ease-in-out infinite;
+    }
+
+    .safe-dots .dot:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+
+    .safe-dots .dot:nth-child(3) {
+      animation-delay: 1s;
+    }
+
+    @keyframes dot-fade {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+  `}
+  client:load
+/>
+
+### ゲームやインタラクティブコンテンツ
+
+ゲームのエフェクト（爆発、ヒットエフェクトなど）により閃光を引き起こすことがあります。
+
+#### 解決方法
+
+1. 設定画面で「閃光を軽減」オプションを提供する
+2. デフォルトで閃光を軽減した状態にする
+3. ゲーム開始前に警告を表示する
+
+```javascript title="閃光軽減オプションの実装例"
+// ユーザー設定を確認
+const reduceFlashing = localStorage.getItem('reduceFlashing') === 'true';
+
+function playExplosionEffect() {
+  if (reduceFlashing) {
+    // 閃光を軽減したエフェクト
+    playGentleExplosion();
+  } else {
+    // 通常のエフェクト
+    playNormalExplosion();
+  }
+}
+```
 
 ## チェックリスト
 
-- コンテンツ内に1秒間で3回以上の閃光がないこと
-- 閃光の領域が画面の25%以下であること
-- 閃光の明るさが一般的な明るさの3倍以下であること
-- 閃光の色が赤以外の色を使用していること
-- ユーザーが閃光を制御できるオプションを提供していること
-- 閃光を伴うコンテンツに警告を表示していること
+<Aside type="caution" title="必須チェック項目">
+- [ ] コンテンツ内に1秒間で3回以上の閃光がない
+- [ ] 閃光の領域が画面の25%以下である
+- [ ] 赤色の飽和した閃光を使用していない
+- [ ] 閃光を伴うコンテンツには事前に警告を表示している
+</Aside>
 
-## ヒント
+<Aside type="note" title="推奨項目（中優先度）">
+- [ ] 動画コンテンツは自動再生しない
+- [ ] ユーザーが閃光を制御できるオプションを提供している
+- [ ] `prefers-reduced-motion`に対応している
+</Aside>
 
-- 閃光の頻度は、1秒間に3回を超えると危険とされています
-- 閃光の領域は、画面の25%を超えると危険性が高まります
-- 赤色の閃光は特に危険性が高いため、避けるべきです
-- 閃光の明るさは、周囲の明るさの3倍を超えないようにします
-- 複数の閃光が同時に発生する場合は、それらを1つの閃光としてカウントします
+## 知っておくと便利なこと
 
-## チェック方法
+### prefers-reduced-motionの活用
 
-- 目視による確認
-  - コンテンツを再生し、閃光の頻度と領域を確認
-  - 明るさの変化を確認
-- ツールによる確認
-  - 閃光検出ツールを使用して自動チェック
-  - 画面録画を分析して閃光の頻度を測定
-- コードレビュー
-  - アニメーションやトランジションの設定を確認
-  - 明るさや色の変化に関するコードを確認
+多くのOSには「モーションを減らす」設定があり、CSSで検出できます。
 
-## 補足・注意点
+```css title="モーション軽減対応"
+/* 通常のアニメーション */
+.element {
+  transition: transform 0.3s ease;
+}
 
-- 閃光の定義には、明るさの急激な変化だけでなく、色の急激な変化も含まれます
-- ユーザーが閃光を制御できるオプションを提供することで、より安全な体験を提供できます
-- 光感受性発作のリスクは個人差が大きいため、可能な限り閃光を避けることが望ましいです
-- 医療的なコンテンツなど、閃光が避けられない場合は、事前に警告を表示する必要があります 
+/* モーション軽減時はアニメーションを無効化 */
+@media (prefers-reduced-motion: reduce) {
+  .element {
+    transition: none;
+  }
+
+  /* または、より穏やかなアニメーションに変更 */
+  .animated {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+```
+
+### 閃光の検出・分析ツール
+
+- [PEAT (Photosensitive Epilepsy Analysis Tool)](https://trace.umd.edu/peat/) - 動画の閃光を分析
+- Harding Test - テレビ放送用の閃光検査
+- 画面録画ソフトでフレームごとに分析
+
+### 安全なアニメーションのガイドライン
+
+| アニメーションの種類 | 推奨される周期 | 注意点 |
+|-------------------|-------------|-------|
+| フェードイン・アウト | 1秒以上 | 急激な変化を避ける |
+| 点滅（パルス） | 2秒以上 | 完全な消灯を避ける |
+| 色の変化 | 1秒以上 | 赤色を避ける |
+| スライド・移動 | 制限なし | 点滅は含まない |
+
+## 参考資料
+
+### WCAGガイドライン
+- [WCAG 2.2 達成基準 2.3.1 3回の閃光、又は閾値以下](https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold) - 英語公式ガイド
+- [解説書 達成基準 2.3.1: 3回の閃光、又は閾値以下 | WAI | W3C](https://waic.jp/translations/WCAG21/Understanding/three-flashes-or-below-threshold) - 日本語版
+
+### 技術的リソース
+- [MDN: prefers-reduced-motion](https://developer.mozilla.org/ja/docs/Web/CSS/@media/prefers-reduced-motion) - モーション軽減の検出方法
+- [PEAT (Photosensitive Epilepsy Analysis Tool)](https://trace.umd.edu/peat/) - 閃光分析ツール
+- [Epilepsy Foundation: Photosensitivity](https://www.epilepsy.com/what-is-epilepsy/seizure-triggers/photosensitivity) - 光感受性てんかんについて

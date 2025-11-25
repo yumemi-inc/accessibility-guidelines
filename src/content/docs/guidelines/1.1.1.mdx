@@ -38,6 +38,7 @@ Bさんはスクリーンリーダーを使用してオンラインショッピ�
 - 画像に`alt`属性が設定されていない
 - `alt`属性が空ではなく、ファイル名がそのまま入っている（例：`alt="IMG_001.jpg"`）
 - アイコンボタンに代替テキストがなく、機能が分からない
+- アイコンの見た目を説明している（例：「バツ印」→「閉じる」とすべき）
 - 装飾的な画像に意味のある`alt`テキストが設定されている（逆のケース）
 - グラフや図表に詳細な説明がない
 </Aside>
@@ -60,6 +61,13 @@ Bさんはスクリーンリーダーを使用してオンラインショッピ�
     <button>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M3 6h18M3 12h18M3 18h18"/>
+      </svg>
+    </button>
+
+    <p>見た目を説明している（機能を説明すべき）</p>
+    <button aria-label="バツ印">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6L6 18M6 6l12 12"/>
       </svg>
     </button>
   `}
@@ -105,9 +113,16 @@ Bさんはスクリーンリーダーを使用してオンラインショッピ�
     <img src="${sampleImageUri}" alt="田中太郎のプロフィール写真" />
 
     <p>アイコンボタンに代替テキストがある</p>
-    <button aria-label="メニューを開く">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <button>
+      <svg role="img" aria-label="メニューを開く" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M3 6h18M3 12h18M3 18h18"/>
+      </svg>
+    </button>
+
+    <p>機能を説明している</p>
+    <button>
+      <svg role="img" aria-label="閉じる" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6L6 18M6 6l12 12"/>
       </svg>
     </button>
   `}
@@ -276,6 +291,51 @@ CSSの背景画像には`alt`属性を設定できないため、代替手段を
 </a>
 ```
 
+### アイコンの見た目ではなく機能を説明する
+
+アイコンボタンの代替テキストには、アイコンの見た目ではなく**機能**を説明します。
+
+<Aside type="danger">
+「バツ印」「矢印」などアイコンの見た目を説明するのではなく、「閉じる」「戻る」など機能を説明してください。
+</Aside>
+
+```html title="悪い例：見た目を説明している"
+<button>
+  <svg role="img" aria-label="バツ印">...</svg>
+</button>
+```
+
+```html title="良い例：機能を説明している"
+<button>
+  <svg role="img" aria-label="閉じる">...</svg>
+</button>
+```
+
+### SVGアイコンへの代替テキストの付与方法
+
+アイコンボタンの実装では、**ボタン要素ではなくアイコン自体にアクセシブルな名前を付ける**ことが推奨されます。
+
+```html title="ボタンに付ける方法（非推奨）"
+<button aria-label="閉じる">
+  <svg aria-hidden="true">...</svg>
+</button>
+```
+
+```html title="アイコンに付ける方法（推奨）"
+<button>
+  <svg role="img" aria-label="閉じる">...</svg>
+</button>
+```
+
+アイコンは装飾ではなく意味を持つ画像です。`img`要素に`alt`属性を付けるのと同様に、SVGアイコンにも`role="img"`と`aria-label`を付けることで、実装の一貫性が保たれます。
+
+代替テキストを付与する方法は他にもあります。
+
+1. **SVGに`role="img"`と`aria-label`を設定する方法** - 主要なブラウザとスクリーンリーダーで安定して動作します
+2. **Visually Hiddenテキストを使用する方法** - コンポーネント化すると扱いやすくなります
+
+詳細な比較は「[SVGアイコンボタンにアクセシブルな名前を付ける方法の比較](https://zenn.dev/moneyforward/articles/20231120-icon-button-accessible-name)」を参照してください。
+
 ## チェックリスト
 
 <Aside type="caution" title="必須チェック項目">
@@ -333,3 +393,4 @@ Image(
 - [MDN: img要素](https://developer.mozilla.org/ja/docs/Web/HTML/Element/img) - HTML img要素の詳細解説
 - [MDN: aria-label](https://developer.mozilla.org/ja/docs/Web/Accessibility/ARIA/Attributes/aria-label) - aria-label属性の使い方
 - [WAI: 画像チュートリアル](https://www.w3.org/WAI/tutorials/images/) - W3C公式の画像アクセシビリティチュートリアル
+- [SVGアイコンボタンにアクセシブルな名前を付ける方法の比較](https://zenn.dev/moneyforward/articles/20231120-icon-button-accessible-name) - SVGアイコンへの代替テキスト付与方法の詳細な比較

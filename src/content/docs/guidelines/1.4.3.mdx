@@ -1,54 +1,413 @@
 ---
 title: '視認性を確保するための最小コントラスト比'
+description: '弱視や高齢者でもテキストが読みやすいコントラスト比の実装方法'
+sidebar:
+  badge:
+    text: WIP
+    variant: caution
 ---
 
-## 目的
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import dedent from 'dedent';
+import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
-視覚的なコントラストを適切に確保することで、弱視や高齢者など、視力に制約のあるユーザーがテキストやUI要素を認識しやすくするためです。十分なコントラスト比を維持することで、様々な環境（明るい場所や古いディスプレイなど）でもコンテンツを読みやすくします。
+<Aside type="tip" title="このガイドラインで目指すこと">
+視覚的なコントラストを適切に確保することで、弱視や高齢者など、視力に制約のあるユーザーがテキストやUI要素を認識しやすくします。
 
-## 該当するケース
+- 様々な環境（明るい場所や古いディスプレイなど）でもコンテンツを読みやすくする
+- 視力に依存せず、すべてのユーザーが情報を取得できる
+</Aside>
 
-- 通常のテキストと背景色の組み合わせ
-- 見出しやラベルなどの重要なテキスト
-- アイコンやボタンなどのUI要素
-- グラフやチャートのデータ表示
-- フォームの入力フィールドとプレースホルダーテキスト
-- ナビゲーション要素やリンクテキスト
+## このガイドラインが達成されないとどうなるか
 
-## 関連するWCAG達成基準
+<Aside type="caution">
+コントラスト比が低いと、弱視のユーザーや高齢者はテキストを読むのに苦労し、情報を取得できなくなります。
+</Aside>
 
-- [WCAG2.2 達成基準1.4.3 コントラスト（最低限）](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum) ([日本語版](https://waic.jp/translations/WCAG21/Understanding/contrast-minimum))
+結果的に、重要な情報が読み取れず、サービスの利用を断念することになります。
+
+<Card title="具体例：ECサイトでの困りごと" icon="information">
+Dさんは軽度の弱視があり、特に薄い色のテキストが読みにくいです。
+あるECサイトで商品の価格がグレーの薄い文字で表示されており、何度も目を細めて確認する必要がありました。
+結局、疲労のため購入を断念してしまいました。
+</Card>
+
+<Aside type="danger" title="こんなとき、達成されていないかもしれません">
+- 薄いグレーのテキストを白背景で使用している
+- プレースホルダーテキストのコントラストが低い
+- 無効状態のボタンのテキストが見えにくい
+- 背景画像の上にテキストが乗っていて読みにくい
+- デザイン重視で淡い色の組み合わせを使用している
+</Aside>
+
+## 実装例での比較
+
+以下のデモでコントラスト比の違いを確認してください。
+
+<Card title="悪い例: コントラスト比が不十分" icon="error">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="card-bad">
+      <h3>商品タイトル</h3>
+      <p class="price">¥1,980</p>
+      <p class="desc">この商品の説明文です。薄い色で読みにくいです。</p>
+      <input type="text" placeholder="検索キーワード" />
+      <button disabled>購入不可</button>
+    </div>
+  `}
+  css={dedent`
+    .card-bad {
+      padding: 16px;
+      background: white;
+      border-radius: 8px;
+    }
+
+    .card-bad h3 {
+      color: #999; /* コントラスト比: 約2.5:1 */
+      margin: 0 0 8px 0;
+    }
+
+    .card-bad .price {
+      color: #bbb; /* コントラスト比: 約1.9:1 */
+      font-size: 18px;
+      margin: 0 0 8px 0;
+    }
+
+    .card-bad .desc {
+      color: #aaa; /* コントラスト比: 約2.3:1 */
+      font-size: 14px;
+      margin: 0 0 12px 0;
+    }
+
+    .card-bad input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
+
+    .card-bad input::placeholder {
+      color: #ccc; /* コントラスト比: 約1.6:1 */
+    }
+
+    .card-bad button {
+      padding: 8px 16px;
+      background: #f0f0f0;
+      color: #ddd; /* コントラスト比: 約1.4:1 */
+      border: none;
+      border-radius: 4px;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+<Card title="良い例: 十分なコントラスト比を確保" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="card-good">
+      <h3>商品タイトル</h3>
+      <p class="price">¥1,980</p>
+      <p class="desc">この商品の説明文です。しっかり読めます。</p>
+      <input type="text" placeholder="検索キーワード" />
+      <button disabled>購入不可</button>
+    </div>
+  `}
+  css={dedent`
+    .card-good {
+      padding: 16px;
+      background: white;
+      border-radius: 8px;
+    }
+
+    .card-good h3 {
+      color: #333; /* コントラスト比: 約12.6:1 */
+      margin: 0 0 8px 0;
+    }
+
+    .card-good .price {
+      color: #c00; /* コントラスト比: 約6.1:1 */
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0 0 8px 0;
+    }
+
+    .card-good .desc {
+      color: #555; /* コントラスト比: 約7.5:1 */
+      font-size: 14px;
+      margin: 0 0 12px 0;
+    }
+
+    .card-good input {
+      padding: 8px;
+      border: 1px solid #767676;
+      border-radius: 4px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
+
+    .card-good input::placeholder {
+      color: #767676; /* コントラスト比: 約4.5:1 */
+    }
+
+    .card-good button {
+      padding: 8px 16px;
+      background: #e0e0e0;
+      color: #767676; /* コントラスト比: 約4.5:1 */
+      border: none;
+      border-radius: 4px;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+## 最低限、すぐに取り組めること
+
+### 要件定義
+
+- デザインガイドラインに最小コントラスト比の要件を明記する
+- 通常テキスト：4.5:1以上
+- 大きなテキスト（24px以上、または18.67px以上の太字）：3:1以上
+
+### デザイン
+
+- カラーパレット作成時にコントラスト比を確認する
+- 背景色と前景色の組み合わせをドキュメント化する
+- プレースホルダーやdisabled状態も基準を満たすようにする
+
+<Card title="コントラスト比を満たす色の組み合わせ例" icon="approve-check">
+
+<LiveCodeExample
+  html={dedent`
+    <div class="color-samples">
+      <div class="sample" style="background: #fff; color: #333;">
+        白背景 × #333<br>コントラスト比: 12.6:1 ✓
+      </div>
+      <div class="sample" style="background: #fff; color: #767676;">
+        白背景 × #767676<br>コントラスト比: 4.5:1 ✓
+      </div>
+      <div class="sample" style="background: #1a73e8; color: #fff;">
+        #1a73e8 × 白<br>コントラスト比: 4.5:1 ✓
+      </div>
+      <div class="sample" style="background: #000; color: #949494;">
+        黒背景 × #949494<br>コントラスト比: 4.5:1 ✓
+      </div>
+    </div>
+  `}
+  css={dedent`
+    .color-samples {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .sample {
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  `}
+  client:load
+/>
+
+</Card>
+
+### 開発
+
+- CSSでカラー変数を使用し、一元管理する
+- コントラストチェッカーをCI/CDに組み込む
+- 背景画像の上にテキストを置く場合は、オーバーレイを使用する
+
+```css title="背景画像上のテキストを読みやすくする方法"
+.hero {
+  position: relative;
+  background-image: url('hero.jpg');
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5); /* 半透明のオーバーレイ */
+}
+
+.hero-text {
+  position: relative;
+  color: white;
+}
+```
+
+### QA
+
+- コントラストチェッカーで全ページを確認する
+- 実際のデバイスで様々な環境（明るい場所、暗い場所）でテストする
+- 弱視シミュレーションツールで確認する
+
+### リリース後
+
+- ユーザーからのフィードバックを収集する
+- コントラストに関する問題を継続的に改善する
+
+## よくある問題と解決方法
+
+### プレースホルダーのコントラストが低い
+
+<Aside type="danger">
+プレースホルダーテキストもユーザーが読む情報です。コントラスト比4.5:1を確保してください。
+</Aside>
+
+<LiveCodeExample
+  html={dedent`
+    <div class="placeholder-demo">
+      <label>悪い例（コントラスト比: 1.6:1）</label>
+      <input type="text" class="bad" placeholder="メールアドレス" />
+
+      <label>良い例（コントラスト比: 4.5:1）</label>
+      <input type="text" class="good" placeholder="メールアドレス" />
+    </div>
+  `}
+  css={dedent`
+    .placeholder-demo {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .placeholder-demo label {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .placeholder-demo input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .placeholder-demo input.bad::placeholder {
+      color: #ccc;
+    }
+
+    .placeholder-demo input.good::placeholder {
+      color: #767676;
+    }
+  `}
+  client:load
+/>
+
+### 背景画像の上にテキストがある
+
+背景画像は場所によって明るさが異なるため、テキストの可読性を低下させることがあります。
+
+#### 解決方法
+
+1. 半透明のオーバーレイを使用する
+2. テキストに影を付ける
+3. テキスト背景にボックスを追加する
+
+```css title="テキストを読みやすくする方法"
+/* 方法1: オーバーレイ */
+.hero::before {
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5));
+}
+
+/* 方法2: テキストシャドウ */
+.hero-text {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* 方法3: 背景ボックス */
+.hero-text {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 16px;
+}
+```
+
+### ダークモード対応
+
+ダークモードでもコントラスト比を維持する必要があります。
+
+```css title="ダークモードでのコントラスト確保"
+:root {
+  --text-primary: #333;     /* 白背景で12.6:1 */
+  --text-secondary: #767676; /* 白背景で4.5:1 */
+  --bg-primary: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #f0f0f0;  /* 黒背景で15:1 */
+    --text-secondary: #b0b0b0; /* 黒背景で7:1 */
+    --bg-primary: #1a1a1a;
+  }
+}
+```
 
 ## チェックリスト
 
-- 通常のテキスト（24px未満、または18.67px未満の太字）が、背景色に対して4.5:1以上のコントラスト比を満たしていること
-- 大きなテキスト（24px以上、または18.67px以上の太字）が、背景色に対して3:1以上のコントラスト比を満たしていること
-- アイコンやボタンなどのUI要素が、背景色に対して十分なコントラスト比を満たしていること
-- グラフやチャートのデータ表示が、背景色に対して十分なコントラスト比を満たしていること
-- フォームの入力フィールドとプレースホルダーテキストが、十分なコントラスト比を満たしていること
-- ナビゲーション要素やリンクテキストが、背景色に対して十分なコントラスト比を満たしていること
+<Aside type="caution" title="必須チェック項目">
+- [ ] 通常のテキスト（24px未満）が背景色に対して4.5:1以上のコントラスト比を満たしている
+- [ ] 大きなテキスト（24px以上、または18.67px以上の太字）が3:1以上のコントラスト比を満たしている
+- [ ] プレースホルダーテキストが4.5:1以上のコントラスト比を満たしている
+</Aside>
 
-## ヒント
+<Aside type="note" title="推奨項目（中優先度）">
+- [ ] UI要素（ボタン、入力フィールドの境界線など）が3:1以上のコントラスト比を満たしている
+- [ ] 無効状態の要素も最低限の視認性が確保されている
+- [ ] ダークモードでもコントラスト比が維持されている
+</Aside>
 
-- コントラスト比は、テキストのサイズや太さによって異なる要件が適用されることを理解しましょう
-- デザインの一貫性を保ちながら、コントラスト比を満たす配色を検討しましょう
-- 背景画像やグラデーションを使用する場合は、テキストが読みやすい領域を確保しましょう
-- 色覚特性の違いを考慮し、色だけでなく明度の差も重要であることを認識しましょう
+## 知っておくと便利なこと
 
-## チェック方法
+### コントラスト比の基準
 
-- ブラウザの開発者ツールのコントラストチェッカーを使用する
-- コントラストチェックツール（例：WebAIM Contrast Checker）を使用する
-- デザインツールのコントラストチェック機能を活用する
-- 実際のデバイスで表示を確認し、様々な環境での視認性をテストする
-- コードレビューで、色の値がWCAGの要件を満たしているか確認する
+| テキストの種類 | 最小コントラスト比（AA） | 推奨コントラスト比（AAA） |
+|--------------|---------------------|----------------------|
+| 通常テキスト（24px未満） | 4.5:1 | 7:1 |
+| 大きなテキスト（24px以上） | 3:1 | 4.5:1 |
+| 太字テキスト（18.67px以上） | 3:1 | 4.5:1 |
 
-## 補足・注意点
+<Aside type="note" title="テキストサイズの単位について">
+WCAGではテキストサイズの要件をpt単位（18pt/14pt）で定めています。これをpx単位に換算すると約24px/18.67pxに相当します。
+ptは印刷用の単位で、pxは画面上のピクセル単位です。デバイスの解像度によって実際の表示サイズが異なるため、px単位での指定の場合は注意が必要です。
+</Aside>
 
-- コントラスト比の計算には、テキストのサイズと太さが影響することを理解しましょう
-- 装飾的なテキストや非アクティブなUI要素は、コントラスト比の要件から除外されます
-- ロゴやブランド要素は、コントラスト比の要件から除外されます
-- 背景画像やグラデーションを使用する場合は、テキストの可読性を確保するための対策が必要です
-- コントラスト比は、色の組み合わせだけでなく、明度の差も重要であることを認識しましょう
-- WCAGではテキストサイズの要件をpt単位（18pt/14pt）で定めています。これをpx単位に換算すると約24px/18.67pxに相当します
-- ptは印刷用の単位で、pxは画面上のピクセル単位です。デバイスの解像度によって実際の表示サイズが異なるため、px単位での指定の場合は注意が必要です 
+### コントラスト比の計算ツール
+
+- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) - Webベースのコントラストチェッカー
+- Chrome DevTools: 要素の色をホバーするとコントラスト比が表示される
+- Figma: プラグイン「Contrast」「Stark」などで確認可能
+
+### よく使われる安全な色の組み合わせ
+
+```css title="コントラスト比を満たす色の組み合わせ"
+/* 白背景での使用 */
+--text-on-white-primary: #333;   /* 12.6:1 */
+--text-on-white-secondary: #555; /* 7.5:1 */
+--text-on-white-minimum: #767676; /* 4.5:1 */
+
+/* 黒背景での使用 */
+--text-on-black-primary: #fff;   /* 21:1 */
+--text-on-black-secondary: #ccc; /* 13.1:1 */
+--text-on-black-minimum: #949494; /* 4.5:1 */
+```
+
+## 参考資料
+
+### WCAGガイドライン
+- [WCAG 2.2 達成基準 1.4.3 コントラスト（最低限）](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum) - 英語公式ガイド
+- [解説書 達成基準 1.4.3: コントラスト（最低限） | WAI | W3C](https://waic.jp/translations/WCAG21/Understanding/contrast-minimum) - 日本語版
+
+### 技術的リソース
+- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) - コントラスト比計算ツール
+- [MDN: 色のコントラスト](https://developer.mozilla.org/ja/docs/Web/Accessibility/Understanding_WCAG/Perceivable/Color_contrast) - 色とコントラストの解説
+- [Colorable](https://colorable.jxnblk.com/) - 色の組み合わせを探すツール

@@ -3,10 +3,9 @@ title: 'フォーカスの可視化'
 description: 'キーボード操作時に現在の位置がはっきり見える表示の実装方法'
 ---
 
-import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import { Aside, Card } from '@astrojs/starlight/components';
 import dedent from 'dedent';
 import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
-import { Sandpack } from "@codesandbox/sandpack-react";
 import { Image } from 'astro:assets';
 import xScreenshot from '../../../assets/images/2.4.7/x-screenshot.jpg';
 
@@ -20,7 +19,7 @@ import xScreenshot from '../../../assets/images/2.4.7/x-screenshot.jpg';
 ## このガイドラインが達成されないとどうなるか
 
 <Aside type="caution">
-フォーカスが見えないと、キーボードユーザーは今どの要素にいるのか把揥できず、意図しない操作や混乱の原因になります。
+フォーカスが見えないと、キーボードユーザーは今どの要素にいるのか把握できず、意図しない操作や混乱の原因になります。
 </Aside>
 
 結果的に、使いやすさが大きく損なわれ、「使えるのに使えない」状態に陥ります。
@@ -138,8 +137,7 @@ Aさんは大量のデータをシステムに入力する業務を担当して�
 
 - コンポーネントにフォーカス状態を定義する（FigmaではVariantsで管理する）
 - 推奨スタイルか確認する
-    - 背景や非フォーカス状態とのコントラスト比が3:1以上
-    - フォーカスリングで表現する場合、太さが2px以上
+    - より厳しくする場合は、背景や非フォーカス状態とのコントラスト比が3:1以上、太さが2px以上
 
 ### 開発
 
@@ -172,7 +170,7 @@ Aさんは大量のデータをシステムに入力する業務を担当して�
 ### QA
 
 - Tabキーで画面全体を巡回し、フォーカス表示を確認する
-- コントラスト比が3:1以上であることを確認する
+- コントラストが背景に埋もれていないか目視で確認する（3:1が目安。ツールを使う場合はフォーカスリング色と背景色でチェック）
 
 ### リリース後
 
@@ -354,11 +352,11 @@ Material-UIやChakra UIなどでは、テーマやコンポーネント単位で
 
 <Aside type="caution" title="必須チェック項目">
 - [ ] **フォーカスインジケータ**がすべての操作可能な要素で表示される
-- [ ] **コントラスト比**が3:1以上ある（WCAG AAレベル）
 - [ ] **フォーカス順序**が論理的で予測可能
 </Aside>
 
 <Aside type="note" title="推奨項目（中優先度）">
+- [ ] **フォーカスのコントラスト**が背景よりはっきり見える（目安として3:1。薄い色なら濃くする）
 - [ ] **マウス操作時に**フォーカスインジケータが表示されない
 - [ ] **モーダルやポップアップ**でフォーカスが適切に管理されている
 - [ ] **フォーカスリングの太さ**が2px以上ある
@@ -564,4 +562,7 @@ Material-UIやChakra UIなどでは、テーマやコンポーネント単位で
 - [GitHub - theKashey/react-focus-lock](https://github.com/theKashey/react-focus-lock) - React用フォーカストラップライブラリ
 - [GitHub - focus-trap/focus-trap](https://github.com/focus-trap/focus-trap) - フレームワーク非依存のフォーカストラップライブラリ
 
+## 関連するWCAG達成基準
 
+- [WCAG 2.2 達成基準 2.4.7 フォーカスの可視化](https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html)（レベルAA）
+- [WCAG 2.2 達成基準 2.4.11 フォーカス表示（最小）](https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance-minimum.html)（レベルAA）

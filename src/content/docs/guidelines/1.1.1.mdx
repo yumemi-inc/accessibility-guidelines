@@ -7,7 +7,7 @@ sidebar:
     variant: caution
 ---
 
-import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import { Aside, Card } from '@astrojs/starlight/components';
 import dedent from 'dedent';
 import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
@@ -173,8 +173,8 @@ Bさんはスクリーンリーダーを使用してオンラインショッピ�
 
 - `img`要素には必ず`alt`属性を設定する
 - 装飾的な画像には`alt=""`（空のalt）を設定する
-- アイコンボタンには`aria-label`または`aria-labelledby`を設定する
-- SVGアイコンには`aria-hidden="true"`を設定し、親要素にラベルを付ける
+- アイコンボタンでは、SVGに`role="img"`と`aria-label`を設定し、ボタンのアクセシブルネームとして扱う
+- 装飾用のSVGは`aria-hidden="true"`を設定する
 
 <Card title="基本的な実装例" icon="approve-check">
 
@@ -313,7 +313,11 @@ CSSの背景画像には`alt`属性を設定できないため、代替手段を
 
 ### SVGアイコンへの代替テキストの付与方法
 
-アイコンボタンの実装では、**ボタン要素ではなくアイコン自体にアクセシブルな名前を付ける**ことが推奨されます。
+アイコンボタンの実装では、**ボタン要素ではなくアイコン自体にアクセシブルな名前を付ける**ことが推奨されます。SVGに付けた`aria-label`はボタンのアクセシブルネームとして反映されます。
+
+<Aside type="note" title="アクセシブルネームとは？">
+スクリーンリーダーなどが読み上げる「ボタンの名前」のことです。`aria-label`に入れた文言がそのまま読み上げられます。
+</Aside>
 
 ```html title="ボタンに付ける方法（非推奨）"
 <button aria-label="閉じる">
@@ -350,6 +354,10 @@ CSSの背景画像には`alt`属性を設定できないため、代替手段を
 - [ ] 代替テキストが「画像」「アイコン」で始まっていない
 - [ ] リンク画像の代替テキストがリンク先を説明している
 </Aside>
+
+## 関連するWCAG達成基準
+
+- [WCAG 2.2 達成基準 1.1.1 非テキストコンテンツ](https://www.w3.org/WAI/WCAG22/Understanding/non-text-content)（レベルA）
 
 ## 知っておくと便利なこと
 

@@ -7,7 +7,7 @@ sidebar:
     variant: caution
 ---
 
-import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import { Aside, Card } from '@astrojs/starlight/components';
 import dedent from 'dedent';
 import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
@@ -174,7 +174,7 @@ Dさんは軽度の弱視があり、特に薄い色のテキストが読みに�
 ### 要件定義
 
 - デザインガイドラインに最小コントラスト比の要件を明記する
-- 通常テキスト：4.5:1以上
+- 通常テキスト：4.5:1以上（色の濃淡差がはっきり見えること。後述のツールで簡単に確認できます）
 - 大きなテキスト（24px以上、または18.67px以上の太字）：3:1以上
 
 ### デザイン
@@ -248,7 +248,8 @@ Dさんは軽度の弱視があり、特に薄い色のテキストが読みに�
 
 ### QA
 
-- コントラストチェッカーで全ページを確認する
+- コントラストチェッカーで全ページを確認する（Chrome DevToolsで色をホバーするとOK/NGが出ます。WebAIMなどのツールでも可）
+  - 数値の代わりに「薄い灰色文字と白背景など、読みにくくないか」を目視チェックし、迷ったらコントラストチェッカーで確認するのでも十分です
 - 実際のデバイスで様々な環境（明るい場所、暗い場所）でテストする
 - 弱視シミュレーションツールで確認する
 
@@ -365,6 +366,10 @@ Dさんは軽度の弱視があり、特に薄い色のテキストが読みに�
 - [ ] 無効状態の要素も最低限の視認性が確保されている
 - [ ] ダークモードでもコントラスト比が維持されている
 </Aside>
+
+## 関連するWCAG達成基準
+
+- [WCAG 2.2 達成基準 1.4.3 コントラスト（最低限）](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum)（レベルAA）
 
 ## 知っておくと便利なこと
 

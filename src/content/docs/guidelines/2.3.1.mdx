@@ -7,7 +7,7 @@ sidebar:
     variant: caution
 ---
 
-import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import { Aside, Card } from '@astrojs/starlight/components';
 import dedent from 'dedent';
 import LiveCodeExample from '../../../components/LiveCodeExample.tsx';
 
@@ -42,16 +42,13 @@ Eさんは光感受性てんかんの既往歴があります。
 
 ## 閃光の基準
 
-以下の条件を**すべて**満たす場合、安全とみなされます。
+以下のどちらかを満たしていれば安全と考えられます（難しい計算は不要です）。
 
-1. **頻度**: 1秒間に3回未満の閃光
-2. **領域**: 画面の25%未満の領域での閃光
-3. **明るさ**: 一般的な明るさの3倍未満の変化
-4. **色**: 赤色の飽和した閃光を避ける
+1. **そもそも速い点滅をさせない**：1秒に3回未満の点滅に抑える
+2. **どうしても点滅が必要な場合**：閃光検出ツール（PEATなど）でチェックし、赤や白の強い点滅が大きな面積で続かないよう修正する
 
 <Aside type="caution" title="赤色の閃光に注意">
-赤色の閃光は特に危険性が高いため、他の色よりも厳しい基準が適用されます。
-可能な限り赤色の点滅・閃光は避けてください。
+赤や白の強い点滅は特に危険です。色を落ち着かせるか、点滅自体をなくすことを優先してください。
 </Aside>
 
 ## 最低限、すぐに取り組めること
@@ -285,9 +282,8 @@ function playExplosionEffect() {
 ## チェックリスト
 
 <Aside type="caution" title="必須チェック項目">
-- [ ] コンテンツ内に1秒間で3回以上の閃光がない
-- [ ] 閃光の領域が画面の25%以下である
-- [ ] 赤色の飽和した閃光を使用していない
+- [ ] コンテンツ内に1秒間で3回以上の閃光がない（どうしても必要ならツールで安全を確認している）
+- [ ] 赤や白など強い点滅を使っていない
 - [ ] 閃光を伴うコンテンツには事前に警告を表示している
 </Aside>
 
@@ -328,6 +324,10 @@ function playExplosionEffect() {
 - [PEAT (Photosensitive Epilepsy Analysis Tool)](https://trace.umd.edu/peat/) - 動画の閃光を分析
 - Harding Test - テレビ放送用の閃光検査
 - 画面録画ソフトでフレームごとに分析
+
+## 関連するWCAG達成基準
+
+- [WCAG 2.2 達成基準 2.3.1 3回の閃光、又は閾値以下](https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold)（レベルA）
 
 ### 安全なアニメーションのガイドライン
 

@@ -56,6 +56,10 @@ export default defineConfig({
           autogenerate: { directory: "guidelines" },
           label: "ガイドライン",
         },
+        {
+          autogenerate: { directory: "accessibility-taskforce" },
+          label: "アクセシビリティタスクフォースについて",
+        },
       ],
       social: [
         {
